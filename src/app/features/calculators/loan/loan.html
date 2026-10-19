@@ -1,0 +1,292 @@
+<div class="loan-page">
+  <div class="calculator-header">
+    <div class="header-badge">
+      <span class="badge-dot"></span>
+      Smart Financial Calculator
+    </div>
+
+    <h1>LOAN CALCULATOR</h1>
+
+    <p>
+      CALCULATE YOUR MONTHLY LOAN PAYMENT, TOTAL INTEREST AND TOTAL COST WITH OUR EASY-TO-USE LOAN
+      CALCULATOR.
+    </p>
+  </div>
+
+  <div class="calculator-layout">
+    <section class="calculator-card input-card">
+      <div class="card-heading">
+        <div>
+          <span class="eyebrow">LOAN DETAILS</span>
+          <h2>Calculate Your Loan</h2>
+          <p>Enter your loan information below.</p>
+        </div>
+
+        <div class="heading-icon">$</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="currency">Currency</label>
+
+          <div class="select-wrapper">
+            <select id="currency" [(ngModel)]="currency" (ngModelChange)="calculate()">
+              <option *ngFor="let item of currencies" [value]="item.code">
+                {{ item.code }} — {{ item.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loanAmount">Loan Amount</label>
+
+          <div class="input-wrapper">
+            <span class="input-prefix">{{ currencySymbol }}</span>
+
+            <input
+              id="loanAmount"
+              type="number"
+              min="0"
+              [(ngModel)]="loanAmount"
+              (ngModelChange)="calculate()"
+            />
+
+            <span class="input-suffix">{{ currency }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="interestRate">Interest Rate</label>
+
+          <div class="input-wrapper">
+            <input
+              id="interestRate"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="interestRate"
+              (ngModelChange)="calculate()"
+            />
+
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loanTerm">Loan Term</label>
+
+          <div class="term-control">
+            <input
+              id="loanTerm"
+              type="number"
+              min="1"
+              [(ngModel)]="loanTerm"
+              (ngModelChange)="calculate()"
+            />
+
+            <select [(ngModel)]="termType" (ngModelChange)="calculate()">
+              <option value="years">Years</option>
+              <option value="months">Months</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="loan-summary-mini">
+        <div class="mini-item">
+          <span>Interest Rate</span>
+          <strong>{{ interestRate | number: '1.2-2' }}%</strong>
+        </div>
+
+        <div class="mini-divider"></div>
+
+        <div class="mini-item">
+          <span>Loan Term</span>
+          <strong>{{ formattedTerm }}</strong>
+        </div>
+
+        <div class="mini-divider"></div>
+
+        <div class="mini-item">
+          <span>Payments</span>
+          <strong>{{ totalMonths }}</strong>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="reset-button" type="button" (click)="reset()">Reset</button>
+
+        <button class="calculate-button" type="button" (click)="calculate()">
+          Calculate Loan
+          <span>→</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="result-card">
+      <div class="result-top">
+        <div>
+          <span class="result-label">ESTIMATED MONTHLY PAYMENT</span>
+
+          <div class="monthly-payment">
+            {{ formatMoney(monthlyPayment) }}
+          </div>
+
+          <p>Based on {{ interestRate | number: '1.2-2' }}% annual interest</p>
+        </div>
+
+        <div class="result-symbol">
+          {{ currencySymbol }}
+        </div>
+      </div>
+
+      <div class="result-divider"></div>
+
+      <div class="result-stats">
+        <div class="result-stat">
+          <span>Loan Amount</span>
+          <strong>{{ formatMoney(loanAmount) }}</strong>
+        </div>
+
+        <div class="result-stat">
+          <span>Total Interest</span>
+          <strong>{{ formatMoney(totalInterest) }}</strong>
+        </div>
+
+        <div class="result-stat">
+          <span>Total Payment</span>
+          <strong>{{ formatMoney(totalPayment) }}</strong>
+        </div>
+
+        <div class="result-stat">
+          <span>Loan Term</span>
+          <strong>{{ formattedTerm }}</strong>
+        </div>
+      </div>
+
+      <div class="breakdown-section">
+        <div class="breakdown-header">
+          <div>
+            <span class="eyebrow">PAYMENT BREAKDOWN</span>
+            <h3>Principal & Interest</h3>
+          </div>
+
+          <span class="breakdown-total">
+            {{ formatMoney(totalPayment) }}
+          </span>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-principal" [style.width.%]="principalPercentage"></div>
+
+          <div class="progress-interest" [style.width.%]="interestPercentage"></div>
+        </div>
+
+        <div class="breakdown-legend">
+          <div class="legend-item">
+            <span class="legend-dot principal-dot"></span>
+
+            <div>
+              <span>Principal</span>
+              <strong>{{ formatMoney(loanAmount) }}</strong>
+            </div>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot interest-dot"></span>
+
+            <div>
+              <span>Interest</span>
+              <strong>{{ formatMoney(totalInterest) }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="schedule-card">
+    <div class="schedule-heading">
+      <div>
+        <span class="eyebrow">AMORTIZATION</span>
+        <h2>Payment Schedule</h2>
+        <p>Your first 12 monthly payments are shown below.</p>
+      </div>
+
+      <div class="schedule-badge">
+        {{ currency }}
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Payment</th>
+            <th>Payment Amount</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Remaining Balance</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of schedule">
+            <td>
+              <span class="month-number">
+                {{ row.month }}
+              </span>
+              Month {{ row.month }}
+            </td>
+
+            <td>
+              {{ formatMoney(row.payment) }}
+            </td>
+
+            <td class="principal-value">
+              {{ formatMoney(row.principal) }}
+            </td>
+
+            <td class="interest-value">
+              {{ formatMoney(row.interest) }}
+            </td>
+
+            <td>
+              {{ formatMoney(row.balance) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="info-grid">
+    <article class="info-card">
+      <span class="info-number">01</span>
+      <h3>Enter Loan Details</h3>
+      <p>
+        Enter the amount you want to borrow, your annual interest rate, loan term and preferred
+        currency.
+      </p>
+    </article>
+
+    <article class="info-card">
+      <span class="info-number">02</span>
+      <h3>Review Your Payment</h3>
+      <p>
+        See your estimated monthly payment, total interest and total amount you will pay over the
+        loan term.
+      </p>
+    </article>
+
+    <article class="info-card">
+      <span class="info-number">03</span>
+      <h3>Understand Your Loan</h3>
+      <p>
+        Use the payment breakdown and amortization schedule to understand how each payment affects
+        your balance.
+      </p>
+    </article>
+  </section>
+</div>

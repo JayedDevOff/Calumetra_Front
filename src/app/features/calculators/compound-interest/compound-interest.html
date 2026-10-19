@@ -1,0 +1,390 @@
+<div class="compound-page">
+  <div class="calculator-header">
+    <h1>COMPOUND INTEREST CALCULATOR</h1>
+    <p>CALCULATE HOW YOUR MONEY CAN GROW WITH COMPOUND INTEREST AND REGULAR CONTRIBUTIONS.</p>
+  </div>
+
+  <div class="calculator-layout">
+    <section class="card input-card">
+      <div class="section-title">
+        <div>
+          <h2>INVESTMENT DETAILS</h2>
+          <p>ENTER YOUR INVESTMENT INFORMATION</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Currency</label>
+          <select [(ngModel)]="selectedCurrency" (ngModelChange)="calculate()">
+            <option *ngFor="let currency of currencies" [value]="currency.code">
+              {{ currency.symbol }} {{ currency.code }} — {{ currency.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Initial Investment</label>
+          <div class="input-wrap">
+            <span>{{ currencySymbol }}</span>
+            <input
+              type="number"
+              min="0"
+              step="100"
+              [(ngModel)]="initialInvestment"
+              (ngModelChange)="calculate()"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Monthly Contribution</label>
+          <div class="input-wrap">
+            <span>{{ currencySymbol }}</span>
+            <input
+              type="number"
+              min="0"
+              step="50"
+              [(ngModel)]="monthlyContribution"
+              (ngModelChange)="calculate()"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Annual Interest Rate</label>
+          <div class="input-wrap suffix">
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              [(ngModel)]="annualRate"
+              (ngModelChange)="calculate()"
+            />
+            <span>%</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Investment Years</label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            step="1"
+            [(ngModel)]="investmentYears"
+            (ngModelChange)="calculate()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Additional Months</label>
+          <input
+            type="number"
+            min="0"
+            max="11"
+            step="1"
+            [(ngModel)]="investmentMonths"
+            (ngModelChange)="calculate()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Compound Frequency</label>
+          <select [(ngModel)]="compoundFrequency" (ngModelChange)="calculate()">
+            <option [ngValue]="1">Annually</option>
+            <option [ngValue]="2">Semi-annually</option>
+            <option [ngValue]="4">Quarterly</option>
+            <option [ngValue]="12">Monthly</option>
+            <option [ngValue]="365">Daily</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Contribution Timing</label>
+          <select [(ngModel)]="contributionTiming" (ngModelChange)="calculate()">
+            <option value="end">End of each month</option>
+            <option value="beginning">Beginning of each month</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Inflation Rate</label>
+          <div class="input-wrap suffix">
+            <input
+              type="number"
+              min="0"
+              max="50"
+              step="0.1"
+              [(ngModel)]="inflationRate"
+              (ngModelChange)="calculate()"
+            />
+            <span>%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="assumption-box">
+        <div class="assumption-icon">i</div>
+        <div>
+          <strong>Calculation assumptions</strong>
+          <p>
+            Monthly contributions are applied using an equivalent monthly rate derived from the
+            selected annual rate and compounding frequency.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card result-card">
+      <div class="result-heading">
+        <div>
+          <span class="result-label">ESTIMATED FUTURE VALUE</span>
+          <h2>{{ formatCurrency(finalBalance) }}</h2>
+          <p>{{ selectedCurrency }} · {{ totalInvestmentPeriod }} investment period</p>
+        </div>
+
+        <div class="currency-badge">
+          {{ currencySymbol }}
+          <span>{{ selectedCurrency }}</span>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item">
+          <span>Total Contributions</span>
+          <strong>{{ formatCurrency(totalContributions) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Total Interest</span>
+          <strong>{{ formatCurrency(totalInterest) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Effective Annual Rate</span>
+          <strong>{{ formatPercent(effectiveAnnualRate) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Growth Multiple</span>
+          <strong>{{ growthMultiple.toFixed(2) }}×</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Inflation-adjusted Value</span>
+          <strong>{{ formatCurrency(inflationAdjustedBalance) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Estimated Doubling Time</span>
+          <strong>{{ formatYears(doublingTime) }}</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card chart-card">
+    <div class="section-title chart-heading">
+      <div>
+        <h2>INVESTMENT GROWTH</h2>
+        <p>SEE HOW YOUR BALANCE MAY GROW OVER TIME</p>
+      </div>
+
+      <div class="chart-legend">
+        <span class="legend-dot"></span>
+        <span>Portfolio Value</span>
+      </div>
+    </div>
+
+    <div class="chart-wrapper">
+      <svg
+        class="growth-chart"
+        viewBox="0 0 1000 360"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label="Compound interest growth chart"
+      >
+        <defs>
+          <linearGradient id="growthGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-opacity="0.24"></stop>
+            <stop offset="100%" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+
+        <g class="chart-grid">
+          <ng-container *ngFor="let item of [0, 1, 2, 3, 4]">
+            <line
+              [attr.x1]="chartPaddingLeft"
+              [attr.x2]="chartWidth - chartPaddingRight"
+              [attr.y1]="getYAxisY(item)"
+              [attr.y2]="getYAxisY(item)"
+            ></line>
+
+            <text [attr.x]="chartPaddingLeft - 12" [attr.y]="getYAxisY(item) + 4" text-anchor="end">
+              {{ formatCompactCurrency(getYAxisValue(item)) }}
+            </text>
+          </ng-container>
+        </g>
+
+        <path *ngIf="chartPoints.length" class="chart-area" [attr.d]="getChartAreaPath()"></path>
+
+        <path *ngIf="chartPoints.length" class="chart-line" [attr.d]="getChartPath()"></path>
+
+        <g class="chart-points">
+          <circle
+            *ngFor="let point of chartVisiblePoints; let i = index"
+            [attr.cx]="point.x"
+            [attr.cy]="point.y"
+            [attr.r]="selectedChartIndex === i ? 6 : 4"
+            (mouseenter)="showTooltip(i)"
+            (mouseleave)="hideTooltip()"
+          ></circle>
+        </g>
+
+        <g class="chart-x-labels">
+          <ng-container *ngFor="let point of chartPoints; let i = index">
+            <text
+              *ngIf="getXAxisLabel(i)"
+              [attr.x]="point.x"
+              [attr.y]="chartHeight - 16"
+              text-anchor="middle"
+            >
+              {{ getXAxisLabel(i) }}
+            </text>
+          </ng-container>
+        </g>
+
+        <g
+          *ngIf="selectedChartIndex >= 0"
+          class="chart-tooltip"
+          [attr.transform]="'translate(' + chartTooltipX + ',' + chartTooltipY + ')'"
+        >
+          <rect x="-78" y="-42" width="156" height="58" rx="9"></rect>
+
+          <text x="0" y="-20" text-anchor="middle" class="tooltip-label">
+            {{ chartTooltipLabel }}
+          </text>
+
+          <text x="0" y="3" text-anchor="middle" class="tooltip-value">
+            {{ formatCurrency(chartTooltipBalance) }}
+          </text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="summary-grid">
+    <div class="card summary-card">
+      <span>INITIAL INVESTMENT</span>
+      <strong>{{ formatCurrency(initialInvestment) }}</strong>
+    </div>
+
+    <div class="card summary-card">
+      <span>MONTHLY CONTRIBUTION</span>
+      <strong>{{ formatCurrency(monthlyContribution) }}</strong>
+    </div>
+
+    <div class="card summary-card">
+      <span>INTEREST RATE</span>
+      <strong>{{ annualRate.toFixed(2) }}%</strong>
+    </div>
+
+    <div class="card summary-card">
+      <span>COMPOUNDING</span>
+      <strong>{{ compoundFrequencyText }}</strong>
+    </div>
+  </section>
+
+  <section class="card breakdown-card">
+    <div class="section-title">
+      <div>
+        <h2>YEAR-BY-YEAR BREAKDOWN</h2>
+        <p>ESTIMATED PORTFOLIO VALUE OVER YOUR INVESTMENT PERIOD</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>PERIOD</th>
+            <th>BALANCE</th>
+            <th>CONTRIBUTIONS</th>
+            <th>INTEREST EARNED</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of growthData">
+            <td>{{ row.label }}</td>
+            <td>{{ formatCurrency(row.balance) }}</td>
+            <td>{{ formatCurrency(row.contributions) }}</td>
+            <td>{{ formatCurrency(row.interest) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card formula-card">
+    <div class="section-title">
+      <div>
+        <h2>COMPOUND INTEREST FORMULA</h2>
+        <p>UNDERSTAND HOW YOUR INVESTMENT GROWS</p>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <span>A = P(1 + r/n)<sup>nt</sup></span>
+    </div>
+
+    <div class="formula-grid">
+      <div>
+        <strong>A</strong>
+        <span>Final amount</span>
+      </div>
+
+      <div>
+        <strong>P</strong>
+        <span>Initial principal</span>
+      </div>
+
+      <div>
+        <strong>r</strong>
+        <span>Annual interest rate</span>
+      </div>
+
+      <div>
+        <strong>n</strong>
+        <span>Compounding periods per year</span>
+      </div>
+
+      <div>
+        <strong>t</strong>
+        <span>Investment time in years</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-grid">
+    <div class="card info-card">
+      <h2>WHAT IS COMPOUND INTEREST?</h2>
+      <p>
+        Compound interest is interest earned on both your original investment and the interest that
+        has already accumulated. Over longer periods, this can significantly increase the growth of
+        an investment.
+      </p>
+    </div>
+
+    <div class="card info-card">
+      <h2>WHY REGULAR CONTRIBUTIONS MATTER</h2>
+      <p>
+        Adding money regularly allows each contribution to potentially earn interest over time.
+        Increasing the contribution amount or investment period can have a substantial effect on the
+        final balance.
+      </p>
+    </div>
+  </section>
+</div>

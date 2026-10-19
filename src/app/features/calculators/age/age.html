@@ -1,0 +1,437 @@
+<div class="age-page">
+  <div class="age-header">
+    <div class="header-top">
+      <div class="header-content">
+        <h1>AGE CALCULATOR – CALCULATE YOUR EXACT AGE ONLINE</h1>
+        <p>CALCULATE YOUR EXACT AGE IN YEARS, MONTHS, AND DAYS WITH OUR FREE ONLINE AGE CALCULATOR. ENTER YOUR DATE OF BIRTH AND CALCULATE YOUR AGE FOR ANY DATE.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="age-body">
+    <section class="input-section" aria-label="Age calculator date inputs">
+      <div class="input-grid-wrapper">
+        <div class="input-group-box">
+          <label class="input-label" for="dd">Date of Birth</label>
+
+          <div class="dob-row">
+            <div class="dob-field">
+              <input
+                type="text"
+                id="dd"
+                class="dob-input"
+                maxlength="2"
+                placeholder="DD"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Birth Day"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="birthDay"
+                (keydown)="handleDayKeyDown($event)"
+                (input)="onDayInput($event)"
+                autofocus
+              />
+              <span class="dob-field-label">Day</span>
+            </div>
+
+            <span class="dob-sep" aria-hidden="true">/</span>
+
+            <div class="dob-field">
+              <input
+                type="text"
+                id="mm"
+                class="dob-input"
+                maxlength="2"
+                placeholder="MM"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Birth Month"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="birthMonth"
+                (keydown)="handleMonthKeyDown($event)"
+                (input)="onMonthInput($event)"
+              />
+              <span class="dob-field-label">Month</span>
+            </div>
+
+            <span class="dob-sep" aria-hidden="true">/</span>
+
+            <div class="dob-field">
+              <input
+                type="text"
+                id="yyyy"
+                class="dob-input dob-input--year"
+                maxlength="4"
+                placeholder="YYYY"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Birth Year"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="birthYear"
+                (keydown)="handleYearKeyDown($event)"
+                (input)="onYearInput($event)"
+              />
+              <span class="dob-field-label">Year</span>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="input-group-box">
+          <label class="input-label" for="target-dd">Calculate Age As Of</label>
+
+          <div class="dob-row">
+            <div class="dob-field">
+              <input
+                type="text"
+                id="target-dd"
+                class="dob-input"
+                maxlength="2"
+                placeholder="DD"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Target Day"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="targetDay"
+                (keydown)="handleTargetDayKeyDown($event)"
+                (input)="onTargetDayInput($event)"
+              />
+              <span class="dob-field-label">Day</span>
+            </div>
+
+            <span class="dob-sep" aria-hidden="true">/</span>
+
+            <div class="dob-field">
+              <input
+                type="text"
+                id="target-mm"
+                class="dob-input"
+                maxlength="2"
+                placeholder="MM"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Target Month"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="targetMonth"
+                (keydown)="handleTargetMonthKeyDown($event)"
+                (input)="onTargetMonthInput($event)"
+              />
+              <span class="dob-field-label">Month</span>
+            </div>
+
+            <span class="dob-sep" aria-hidden="true">/</span>
+
+            <div class="dob-field">
+              <input
+                type="text"
+                id="target-yyyy"
+                class="dob-input dob-input--year"
+                maxlength="4"
+                placeholder="YYYY"
+                inputmode="numeric"
+                autocomplete="off"
+                aria-label="Target Year"
+                [attr.aria-invalid]="errorMessage ? true : null"
+                [(ngModel)]="targetYear"
+                (keydown)="handleTargetYearKeyDown($event)"
+                (input)="onTargetYearInput($event)"
+              />
+              <span class="dob-field-label">Year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="error-msg" [class.visible]="!!errorMessage" role="alert" aria-live="polite">
+        {{ errorMessage }}
+      </p>
+    </section>
+
+    <button type="button" class="calc-btn" (click)="calculateAge()">Calculate Age</button>
+
+    <section
+      class="results-section"
+      [class.visible]="!!age"
+      [attr.aria-hidden]="!age"
+      aria-label="Age calculation results"
+    >
+      <div class="result-heading">
+        <span class="result-heading-line"></span>
+        <span>YOUR EXACT AGE</span>
+        <span class="result-heading-line"></span>
+      </div>
+
+      <div class="result-cards">
+        <article class="result-card">
+          <span class="card-value">{{ age?.years ?? 0 }}</span>
+          <span class="card-unit">Years</span>
+        </article>
+
+        <article class="result-card">
+          <span class="card-value">{{ age?.months ?? 0 }}</span>
+          <span class="card-unit">Months</span>
+        </article>
+
+        <article class="result-card">
+          <span class="card-value">{{ age?.days ?? 0 }}</span>
+          <span class="card-unit">Days</span>
+        </article>
+
+        <article class="result-card">
+          <span class="card-value">{{ age?.liveHours ?? 0 }}</span>
+          <span class="card-unit">Hours</span>
+        </article>
+
+        <article class="result-card">
+          <span class="card-value">{{ age?.liveMinutes ?? 0 }}</span>
+          <span class="card-unit">Minutes</span>
+        </article>
+
+        <article class="result-card">
+          <span class="card-value">{{ age?.liveSeconds ?? 0 }}</span>
+          <span class="card-unit">Seconds</span>
+        </article>
+      </div>
+
+      <div class="next-birthday-card" *ngIf="nextBirthday">
+        <span class="birthday-icon" aria-hidden="true">🎉</span>
+        <div>
+          <span class="birthday-label">NEXT BIRTHDAY</span>
+          <p>{{ nextBirthday.months }} Months, {{ nextBirthday.days }} Days</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<section class="seo-container" aria-label="Age calculator information">
+  <section class="seo-card how-to-card">
+    <div class="card-header">
+      <div class="section-icon">⚡</div>
+      <div>
+        <span class="section-kicker">QUICK GUIDE</span>
+        <h2>How to Use This Exact Age Calculator</h2>
+      </div>
+    </div>
+
+    <div class="steps-grid">
+      <article class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <h3>Enter Date of Birth</h3>
+          <p>Enter your exact day, month, and year of birth in the date fields.</p>
+        </div>
+      </article>
+
+      <article class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <h3>Select Target Date</h3>
+          <p>Use today's date or enter any past or future date to calculate your age.</p>
+        </div>
+      </article>
+
+      <article class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <h3>Get Instant Results</h3>
+          <p>View your exact age in years, months, days, hours, minutes, and seconds.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="seo-card feature-card">
+    <div class="card-header">
+      <div class="section-icon">🌐</div>
+      <div>
+        <span class="section-kicker">WHY USE IT</span>
+        <h2>Why Use an Online Age Calculator for Jobs, Admissions & Visas?</h2>
+      </div>
+    </div>
+
+    <div class="feature-content">
+      <p class="feature-intro">
+        An accurate age calculation can be useful when checking eligibility requirements for jobs,
+        university admissions, exams, immigration, official applications, and important personal
+        milestones. This calculator uses calendar dates to provide a precise chronological age.
+      </p>
+
+      <div class="feature-grid">
+        <article class="feature-box">
+          <div class="feature-icon">🎓</div>
+          <div>
+            <h3>University Admissions</h3>
+            <p>
+              Check your age against admission requirements and important application deadlines.
+            </p>
+          </div>
+        </article>
+
+        <article class="feature-box">
+          <div class="feature-icon">💼</div>
+          <div>
+            <h3>Job Eligibility</h3>
+            <p>
+              Calculate your exact age for recruitment cut-off dates and employment applications.
+            </p>
+          </div>
+        </article>
+
+        <article class="feature-box">
+          <div class="feature-icon">✈️</div>
+          <div>
+            <h3>Visa & Immigration</h3>
+            <p>
+              Determine your age for immigration forms, visa applications, and age-based
+              requirements.
+            </p>
+          </div>
+        </article>
+
+        <article class="feature-box">
+          <div class="feature-icon">📅</div>
+          <div>
+            <h3>Leap Year Accuracy</h3>
+            <p>
+              Calendar month lengths and leap years are considered when determining your
+              chronological age.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-card faq-card" aria-labelledby="faq-title">
+    <div class="card-header">
+      <div class="section-icon">❓</div>
+      <div>
+        <span class="section-kicker">HELP CENTER</span>
+        <h2 id="faq-title">Frequently Asked Questions</h2>
+      </div>
+    </div>
+
+    <div class="seo-faq">
+      <details open>
+        <summary>
+          <span>How is exact age calculated on a specific date?</span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="faq-answer">
+          <p>
+            Exact age is calculated by comparing the date of birth with the selected target date.
+            The calculation determines complete years, remaining calendar months, and remaining days
+            while accounting for different month lengths and leap years.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span>Can I calculate my age for future or past dates?</span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="faq-answer">
+          <p>
+            Yes. You can enter a past or future target date to determine how old you were or will be
+            on that particular date.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span>Why does calendar age differ from basic total day subtraction?</span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="faq-answer">
+          <p>
+            Calendar months do not all contain the same number of days. A chronological age
+            calculation follows actual calendar years, months, and days instead of assuming every
+            month or year has a fixed duration.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span>Is this Age Calculator free to use globally?</span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+
+        <div class="faq-answer">
+          <p>
+            Yes. The calculator is free to use and can be accessed from desktop and mobile devices
+            without requiring account registration.
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="related-calculators-card" aria-labelledby="related-title">
+    <div class="related-header">
+      <div>
+        <span class="section-kicker">EXPLORE MORE</span>
+        <h2 id="related-title">Related Calculators</h2>
+      </div>
+    </div>
+
+    <div class="related-calculators">
+      <a routerLink="/bmi-calculator">
+        <span>BMI Calculator</span>
+        <span class="related-arrow">→</span>
+      </a>
+
+      <a routerLink="/emi-calculator">
+        <span>EMI Calculator</span>
+        <span class="related-arrow">→</span>
+      </a>
+    </div>
+  </section>
+</section>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is exact age calculated on a specific date?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Exact age is calculated by comparing the date of birth with the selected target date. The calculation determines complete years, remaining calendar months, and remaining days while accounting for different month lengths and leap years."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I calculate my age for future or past dates?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. You can enter a past or future target date to determine how old you were or will be on that particular date."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does calendar age differ from basic total day subtraction?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Calendar months do not all contain the same number of days. A chronological age calculation follows actual calendar years, months, and days instead of assuming every month or year has a fixed duration."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this Age Calculator free to use globally?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The calculator is free to use and can be accessed from desktop and mobile devices without requiring account registration."
+        }
+      }
+    ]
+  }
+</script>

@@ -1,0 +1,371 @@
+<div class="savings-page">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <span class="badge">Savings Goal Calculator</span>
+
+      <h1>Savings Goal Calculator</h1>
+
+      <p>
+        Find out how long it will take to reach your savings goal
+        based on your current savings, monthly contribution and
+        interest rate.
+      </p>
+    </div>
+  </section>
+
+
+  <main class="container">
+
+    <!-- Calculator -->
+    <section class="card calculator">
+
+      <div class="heading">
+        <span class="icon">🎯</span>
+
+        <div>
+          <h2>Savings Details</h2>
+          <p>Enter your savings information</p>
+        </div>
+      </div>
+
+
+      <form
+        [formGroup]="savingsForm"
+        (ngSubmit)="calculateSavings()"
+      >
+
+        <div class="form-grid">
+
+          <div class="field">
+            <label>Savings Goal</label>
+
+            <div class="input">
+              <span>$</span>
+
+              <input
+                type="number"
+                formControlName="goalAmount"
+                placeholder="10,000"
+              />
+            </div>
+
+            <small *ngIf="isInvalid('goalAmount')">
+              Enter a valid savings goal.
+            </small>
+          </div>
+
+
+          <div class="field">
+            <label>Current Savings</label>
+
+            <div class="input">
+              <span>$</span>
+
+              <input
+                type="number"
+                formControlName="currentSavings"
+                placeholder="2,000"
+              />
+            </div>
+
+            <small *ngIf="isInvalid('currentSavings')">
+              Enter a valid amount.
+            </small>
+          </div>
+
+
+          <div class="field">
+            <label>Monthly Contribution</label>
+
+            <div class="input">
+              <span>$</span>
+
+              <input
+                type="number"
+                formControlName="monthlyContribution"
+                placeholder="400"
+              />
+            </div>
+
+            <small
+              *ngIf="
+                isInvalid('monthlyContribution') ||
+                savingsForm
+                  .get('monthlyContribution')
+                  ?.hasError('contributionRequired')
+              "
+            >
+              Enter a monthly contribution.
+            </small>
+          </div>
+
+
+          <div class="field">
+            <label>Annual Interest Rate</label>
+
+            <div class="input">
+              <input
+                type="number"
+                formControlName="annualInterestRate"
+                placeholder="5"
+                step="0.01"
+              />
+
+              <span>%</span>
+            </div>
+
+            <small *ngIf="isInvalid('annualInterestRate')">
+              Enter a valid interest rate.
+            </small>
+          </div>
+
+        </div>
+
+
+        <!-- Quick Summary -->
+        <div class="summary">
+
+          <div>
+            <span>Remaining</span>
+            <strong>
+              ${{ remainingAfterCurrent | number: '1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Monthly Saving</span>
+            <strong>
+              ${{
+                savingsForm.get('monthlyContribution')?.value
+                  | number: '1.0-0'
+              }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Interest Rate</span>
+            <strong>
+              {{ savingsForm.get('annualInterestRate')?.value }}%
+            </strong>
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          [disabled]="savingsForm.invalid"
+        >
+          Calculate Savings
+          <span>→</span>
+        </button>
+
+      </form>
+
+    </section>
+
+
+    <!-- Results -->
+    <section
+      class="results"
+      *ngIf="calculated"
+    >
+
+      <!-- Main Result -->
+      <div class="card result-card">
+
+        <div class="result-top">
+
+          <div>
+            <span class="label">
+              Estimated Time to Reach Goal
+            </span>
+
+            <h2>{{ timeLabel }}</h2>
+
+            <p>
+              Based on your current savings and monthly contribution.
+            </p>
+          </div>
+
+
+          <div
+            class="progress"
+            [style.--progress]="progressPercentage + '%'"
+          >
+            <div>
+              <strong>
+                {{ progressPercentage | number: '1.0-0' }}%
+              </strong>
+              <span>Goal</span>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="stats">
+
+          <div>
+            <span>Remaining</span>
+            <strong>
+              ${{ remainingAmount | number: '1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Contributions</span>
+            <strong>
+              ${{ totalContribution | number: '1.0-0' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Interest Earned</span>
+            <strong>
+              ${{ interestEarned | number: '1.0-0' }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Breakdown -->
+      <div class="card breakdown">
+
+        <div class="breakdown-head">
+          <div>
+            <span>Savings Breakdown</span>
+            <h3>Your Savings Progress</h3>
+          </div>
+
+          <b>{{ timeLabel }}</b>
+        </div>
+
+
+        <div class="breakdown-content">
+
+          <div
+            class="donut"
+            [style.--progress]="progressPercentage + '%'"
+          >
+            <div>
+              <strong>
+                {{ progressPercentage | number: '1.0-0' }}%
+              </strong>
+              <span>Goal</span>
+            </div>
+          </div>
+
+
+          <div class="breakdown-list">
+
+            <div>
+              <span>
+                <i class="dot current"></i>
+                Current Savings
+              </span>
+
+              <strong>
+                ${{ currentSavings | number: '1.0-0' }}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                <i class="dot contribution"></i>
+                Contributions
+              </span>
+
+              <strong>
+                ${{ totalContribution | number: '1.0-0' }}
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                <i class="dot interest"></i>
+                Interest
+              </span>
+
+              <strong>
+                ${{ interestEarned | number: '1.0-0' }}
+              </strong>
+            </div>
+
+            <div class="total">
+              <span>Total Saved</span>
+
+              <strong>
+                ${{ totalSaved | number: '1.0-0' }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Information -->
+    <div
+      class="info"
+      *ngIf="calculated"
+    >
+      <div>i</div>
+
+      <p>
+        <strong>How This Estimate Works</strong>
+        <br />
+        The calculation uses your current savings, monthly contribution
+        and annual interest rate with monthly compounding.
+      </p>
+    </div>
+
+
+    <!-- Footer Stats -->
+    <div
+      class="footer-stats"
+      *ngIf="calculated"
+    >
+
+      <div>
+        <span>Savings Goal</span>
+        <strong>
+          ${{ goalAmount | number: '1.0-0' }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Monthly Saving</span>
+        <strong>
+          ${{ monthlyContribution | number: '1.0-0' }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Monthly Interest</span>
+        <strong>
+          ${{ monthlyInterest | number: '1.0-2' }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <p class="disclaimer">
+      This calculator provides estimates for informational purposes only.
+      Actual savings may vary depending on interest rates, fees, taxes
+      and other factors.
+    </p>
+
+  </main>
+
+</div>

@@ -1,0 +1,525 @@
+<main class="emi-page">
+
+  <section class="emi-container">
+
+    <!-- Header -->
+    <header class="emi-header">
+
+      <div class="header-badge">
+        GLOBAL FINANCE TOOL
+      </div>
+
+      <h1>EMI Calculator</h1>
+
+      <p>
+        Calculate loan payments, interest and total repayment
+        in any currency.
+      </p>
+
+    </header>
+
+
+    <!-- Calculator -->
+    <section class="calculator-card">
+
+      <!-- LEFT SIDE -->
+      <div class="calculator-inputs">
+
+        <div class="section-heading">
+          <span class="section-number">01</span>
+
+          <div>
+            <h2>Loan Details</h2>
+            <p>Enter your loan information</p>
+          </div>
+        </div>
+
+
+        <!-- Loan Amount -->
+        <div class="form-group">
+
+          <label for="loanAmount">
+            Loan Amount
+          </label>
+
+          <div class="money-input">
+
+            <span class="currency-symbol">
+              {{ selectedCurrency.symbol }}
+            </span>
+
+            <input
+              id="loanAmount"
+              type="number"
+              min="0"
+              [(ngModel)]="loanAmount"
+              (ngModelChange)="calculate()"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- Currency -->
+        <div class="form-group">
+
+          <label for="currency">
+            Currency
+          </label>
+
+          <select
+            id="currency"
+            [(ngModel)]="currencyCode"
+            (ngModelChange)="calculate()"
+          >
+
+            <option
+              *ngFor="let currency of currencies"
+              [value]="currency.code"
+            >
+              {{ currency.code }} — {{ currency.name }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- Interest Rate -->
+        <div class="form-group">
+
+          <label for="interestRate">
+            Annual Interest Rate
+          </label>
+
+          <div class="suffix-input">
+
+            <input
+              id="interestRate"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="interestRate"
+              (ngModelChange)="calculate()"
+            />
+
+            <span>%</span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Tenure -->
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="tenure">
+              Loan Tenure
+            </label>
+
+            <input
+              id="tenure"
+              type="number"
+              min="1"
+              [(ngModel)]="tenure"
+              (ngModelChange)="calculate()"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="tenureUnit">
+              Unit
+            </label>
+
+            <select
+              id="tenureUnit"
+              [(ngModel)]="tenureUnit"
+              (ngModelChange)="calculate()"
+            >
+
+              <option value="years">
+                Years
+              </option>
+
+              <option value="months">
+                Months
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- Interest Type -->
+        <div class="form-group">
+
+          <label>
+            Interest Method
+          </label>
+
+          <div class="segmented-control">
+
+            <button
+              type="button"
+              [class.active]="interestType === 'reducing'"
+              (click)="interestType = 'reducing'; calculate()"
+            >
+              Reducing Balance
+            </button>
+
+            <button
+              type="button"
+              [class.active]="interestType === 'flat'"
+              (click)="interestType = 'flat'; calculate()"
+            >
+              Flat Rate
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Frequency -->
+        <div class="form-group">
+
+          <label>
+            Payment Frequency
+          </label>
+
+          <div class="frequency-grid">
+
+            <button
+              type="button"
+              [class.active]="paymentFrequency === 'monthly'"
+              (click)="paymentFrequency = 'monthly'; calculate()"
+            >
+              Monthly
+            </button>
+
+            <button
+              type="button"
+              [class.active]="paymentFrequency === 'biweekly'"
+              (click)="paymentFrequency = 'biweekly'; calculate()"
+            >
+              Bi-weekly
+            </button>
+
+            <button
+              type="button"
+              [class.active]="paymentFrequency === 'weekly'"
+              (click)="paymentFrequency = 'weekly'; calculate()"
+            >
+              Weekly
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Start Date -->
+        <div class="form-group">
+
+          <label for="startDate">
+            Loan Start Date
+          </label>
+
+          <input
+            id="startDate"
+            type="date"
+            [(ngModel)]="startDate"
+            (ngModelChange)="calculate()"
+          />
+
+        </div>
+
+
+        <!-- Reset -->
+        <button
+          type="button"
+          class="reset-button"
+          (click)="reset()"
+        >
+          Reset Calculator
+        </button>
+
+      </div>
+
+
+      <!-- RIGHT SIDE -->
+      <div class="calculator-result">
+
+        <div class="result-top">
+
+          <span>
+            {{ frequencyLabel }} Payment
+          </span>
+
+          <small>
+            {{ currencyCode }}
+          </small>
+
+        </div>
+
+
+        <div class="main-emi">
+
+          {{ formatMoney(emi) }}
+
+        </div>
+
+
+        <div class="result-caption">
+
+          Estimated {{ frequencyLabel.toLowerCase() }}
+          loan payment
+
+        </div>
+
+
+        <!-- Result Cards -->
+        <div class="result-grid">
+
+          <div class="result-box">
+
+            <span>
+              Total Principal
+            </span>
+
+            <strong>
+              {{ formatMoney(totalPrincipal) }}
+            </strong>
+
+          </div>
+
+
+          <div class="result-box">
+
+            <span>
+              Total Interest
+            </span>
+
+            <strong>
+              {{ formatMoney(totalInterest) }}
+            </strong>
+
+          </div>
+
+
+          <div class="result-box">
+
+            <span>
+              Total Payment
+            </span>
+
+            <strong>
+              {{ formatMoney(totalPayment) }}
+            </strong>
+
+          </div>
+
+
+          <div class="result-box">
+
+            <span>
+              Interest Share
+            </span>
+
+            <strong>
+              {{ interestPercentage | number:'1.1-1' }}%
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Loan Information -->
+        <div class="loan-info">
+
+          <div>
+
+            <span>Payments</span>
+
+            <strong>
+              {{ numberOfPayments }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>Method</span>
+
+            <strong>
+              {{ interestType === 'reducing'
+                ? 'Reducing'
+                : 'Flat Rate'
+              }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>End Date</span>
+
+            <strong>
+              {{ loanEndDate || '—' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Amortization -->
+    <section
+      class="schedule-card"
+      *ngIf="amortizationSchedule.length"
+    >
+
+      <div class="schedule-header">
+
+        <div>
+
+          <div class="section-heading compact">
+
+            <span class="section-number">
+              02
+            </span>
+
+            <div>
+
+              <h2>
+                Amortization Schedule
+              </h2>
+
+              <p>
+                Payment-by-payment loan breakdown
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="schedule-summary">
+
+          {{ numberOfPayments }} Payments
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Principal
+              </th>
+
+              <th>
+                Interest
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Remaining Balance
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let row of visibleSchedule"
+            >
+
+              <td>
+                {{ row.payment }}
+              </td>
+
+              <td>
+                {{ formatMoney(row.principal) }}
+              </td>
+
+              <td>
+                {{ formatMoney(row.interest) }}
+              </td>
+
+              <td class="payment-cell">
+                {{ formatMoney(row.emi) }}
+              </td>
+
+              <td>
+                {{ formatMoney(row.balance) }}
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <div
+        class="schedule-limit"
+        *ngIf="amortizationSchedule.length > 120"
+      >
+
+        Showing first 120 payments of
+        {{ amortizationSchedule.length }} total payments.
+
+      </div>
+
+    </section>
+
+
+    <!-- Disclaimer -->
+    <footer class="emi-footer">
+
+      <p>
+        This calculator provides estimates for informational purposes only.
+        Actual loan payments may vary depending on lender policies,
+        fees, taxes, compounding conventions and local regulations.
+      </p>
+
+    </footer>
+
+  </section>
+
+</main>

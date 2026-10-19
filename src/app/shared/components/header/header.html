@@ -1,0 +1,79 @@
+<header class="app-header">
+  <nav class="navbar">
+    <a class="brand" routerLink="/">
+      <img src="/assets/media/logos/calumetra-large.png" alt="CaluMetra" class="brand-logo" />
+    </a>
+
+    <button
+      class="mobile-menu-btn"
+      type="button"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="menu" [class.mobile-open]="mobileMenu">
+      <div
+        class="tools-menu"
+        (mouseenter)="openToolsOnHover()"
+        (mouseleave)="closeToolsOnMouseLeave()"
+      >
+        <button class="tools-btn" type="button">
+          <span>All Calculators</span>
+
+          <!-- <span
+            class="arrow"
+            [class.rotate]="toolsOpen"
+          >
+            ⌄
+          </span> -->
+          <span class="arrow" [class.rotate]="toolsOpen"></span>
+        </button>
+
+        <div class="tools-dropdown" *ngIf="toolsOpen" (mouseenter)="openToolsOnHover()">
+          <ng-container *ngFor="let category of CATEGORIES">
+            <div class="dropdown-column" *ngIf="hasCalculators(category.name)">
+              <h4>{{ category.icon }} {{ category.name }}</h4>
+
+              <ng-container *ngFor="let calculator of calculators">
+                <a
+                  *ngIf="calculator.category === category.name"
+                  [routerLink]="calculator.route"
+                  routerLinkActive="active"
+                  (click)="closeMenu()"
+                >
+                  <span class="tool-icon" [style.background]="calculator.iconBg">
+                    {{ calculator.icon }}
+                  </span>
+
+                  <span>{{ calculator.name }}</span>
+                </a>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <a class="nav-link" routerLink="/blog" routerLinkActive="active" (click)="closeMenu()">
+        Blog
+      </a>
+
+      <a class="nav-link" routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">
+        Contact
+      </a>
+
+      <a class="nav-link" routerLink="/about" routerLinkActive="active" (click)="closeMenu()">
+        About
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <a class="login-link" routerLink="/login"> Login </a>
+
+      <a class="signup-btn" routerLink="/register"> Sign up </a>
+    </div>
+  </nav>
+</header>

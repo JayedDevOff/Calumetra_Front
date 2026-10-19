@@ -1,0 +1,139 @@
+<div class="dashboard">
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="hero-badge"> CALCULATOR TOOLS </span>
+
+      <h1>ALL CALCULATORS IN ONE PLACE test</h1>
+
+      <p>SIMPLE, FAST AND ACCURATE CALCULATORS FOR YOUR EVERYDAY NEEDS</p>
+    </div>
+  </section>
+
+  <section class="section all-calculators">
+    <div class="section-header">
+      <div class="section-title">
+        <h2>All Calculators</h2>
+
+        <p>{{ filteredCalculators.length }} calculators available.</p>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon"> ⌕ </span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Search calculators..."
+        />
+
+        <button *ngIf="searchTerm" type="button" class="clear-btn" (click)="clearSearch()">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-wrapper">
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="selectedCategory === 'All'"
+        (click)="selectCategory('All')"
+      >
+        All
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        *ngFor="let category of availableCategories"
+        [class.active]="selectedCategory === category.name"
+        (click)="selectCategory(category.name)"
+        [title]="category.name"
+      >
+        <span class="filter-icon">
+          {{ category.icon }}
+        </span>
+
+        <span class="filter-text">
+          {{ category.name }}
+        </span>
+      </button>
+    </div>
+
+    <div class="calculator-grid" *ngIf="filteredCalculators.length > 0">
+      <div
+        class="calculator-card"
+        *ngFor="let calculator of filteredCalculators"
+        (click)="openCalculator(calculator)"
+      >
+        <div class="calculator-icon" [style.background]="calculator.iconBg">
+          {{ calculator.icon }}
+        </div>
+
+        <div class="calculator-info">
+          <span class="small-category">
+            {{ calculator.category }}
+          </span>
+
+          <h3>
+            {{ calculator.name }}
+          </h3>
+
+          <p>
+            {{ calculator.description }}
+          </p>
+        </div>
+
+        <span class="card-arrow"> → </span>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredCalculators.length === 0">
+      <div class="empty-icon">⌕</div>
+
+      <h3>No calculators found</h3>
+
+      <p>Try searching with a different keyword.</p>
+
+      <button type="button" (click)="clearSearch()">Clear Search</button>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <div class="info-card">
+      <h2>Free Online Calculators</h2>
+
+      <p>
+        Calumetra provides free online calculators for everyday calculations. Quickly calculate your
+        age, BMI, percentages and other useful values with simple and easy-to-use tools.
+      </p>
+    </div>
+
+    <div class="info-card">
+      <h2>How to Use Our Calculators</h2>
+
+      <p>
+        Select a calculator from the list above, enter the required information, and get your result
+        instantly. Our calculators are designed to be fast, simple and easy to use on desktop and
+        mobile devices.
+      </p>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>Are Calumetra calculators free?</h3>
+
+      <p>Yes, all calculators on Calumetra are free to use.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Can I use Calumetra calculators on mobile?</h3>
+
+      <p>Yes, Calumetra calculators are designed to work on mobile, tablet and desktop devices.</p>
+    </div>
+  </section>
+</div>

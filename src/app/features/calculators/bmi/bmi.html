@@ -1,0 +1,815 @@
+<main class="bmi-page"> <section class="bmi-hero"> <div class="hero-content">
+  <span class="hero-badge">
+    FREE ONLINE HEALTH CALCULATOR
+  </span>
+
+  <h1>BMI Calculator</h1>
+
+  <p>
+    Calculate your Body Mass Index using your height and weight,
+    check your general BMI category, and view an estimated healthy
+    weight range for your height.
+  </p>
+
+</div>
+</section> <section class="calculator-wrapper">
+<div class="calculator-card">
+
+  <div class="calculator-header">
+
+    <div class="calculator-icon">
+      ⚖️
+    </div>
+
+    <div>
+      <span class="section-label">
+        HEALTH CALCULATOR
+      </span>
+
+      <h2>Calculate Your BMI</h2>
+
+      <p>
+        Enter your height and weight to calculate your BMI.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="calculator-content">
+
+    <div class="calculator-form">
+
+      <div class="unit-selector-card">
+
+        <div class="unit-selector-header">
+
+          <div>
+            <span class="unit-selector-label">
+              Measurement Units
+            </span>
+
+            <p>
+              Choose the units you want to use.
+            </p>
+          </div>
+
+          <div class="unit-selector-icon">
+            ⚙
+          </div>
+
+        </div>
+
+        <div class="unit-selector-grid">
+
+          <div class="unit-selector">
+
+            <label>
+              Height
+            </label>
+
+            <div class="unit-options">
+
+              <button
+                type="button"
+                [class.active]="heightUnit === 'cm'"
+                (click)="changeHeightUnit('cm')"
+              >
+                <span>cm</span>
+                <small>Centimeters</small>
+              </button>
+
+              <button
+                type="button"
+                [class.active]="heightUnit === 'ftin'"
+                (click)="changeHeightUnit('ftin')"
+              >
+                <span>ft & in</span>
+                <small>Feet & Inches</small>
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="unit-selector">
+
+            <label>
+              Weight
+            </label>
+
+            <div class="unit-options">
+
+              <button
+                type="button"
+                [class.active]="weightUnit === 'kg'"
+                (click)="changeWeightUnit('kg')"
+              >
+                <span>kg</span>
+                <small>Kilograms</small>
+              </button>
+
+              <button
+                type="button"
+                [class.active]="weightUnit === 'lb'"
+                (click)="changeWeightUnit('lb')"
+              >
+                <span>lb</span>
+                <small>Pounds</small>
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div
+        class="input-group"
+        *ngIf="heightUnit === 'cm'"
+      >
+
+        <label for="height">
+          Height
+          <span>Enter your height</span>
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            id="height"
+            type="number"
+            [(ngModel)]="height"
+            min="1"
+            step="0.1"
+            placeholder="Enter height"
+          />
+
+          <span>cm</span>
+
+        </div>
+
+      </div>
+
+      <div
+        class="feet-inch-grid"
+        *ngIf="heightUnit === 'ftin'"
+      >
+
+        <div class="input-group">
+
+          <label for="feet">
+            Feet
+            <span>ft</span>
+          </label>
+
+          <div class="input-wrapper">
+
+            <input
+              id="feet"
+              type="number"
+              [(ngModel)]="feet"
+              min="0"
+              step="1"
+              placeholder="Feet"
+            />
+
+            <span>ft</span>
+
+          </div>
+
+        </div>
+
+        <div class="input-group">
+
+          <label for="inches">
+            Inches
+            <span>0–11.99</span>
+          </label>
+
+          <div class="input-wrapper">
+
+            <input
+              id="inches"
+              type="number"
+              [(ngModel)]="inches"
+              min="0"
+              max="11.99"
+              step="0.1"
+              placeholder="Inches"
+            />
+
+            <span>in</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="input-group">
+
+        <label for="weight">
+          Weight
+          <span>Enter your weight</span>
+        </label>
+
+        <div class="input-wrapper">
+
+          <input
+            id="weight"
+            type="number"
+            [(ngModel)]="weight"
+            min="0.1"
+            step="0.1"
+            placeholder="Enter weight"
+          />
+
+          <span>
+            {{ weightUnit }}
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="button-group">
+
+        <button
+          type="button"
+          class="calculate-btn"
+          (click)="calculateBMI()"
+        >
+          Calculate BMI
+          <span class="button-arrow">→</span>
+        </button>
+
+        <button
+          type="button"
+          class="reset-btn"
+          (click)="reset()"
+        >
+          Reset
+        </button>
+
+      </div>
+
+      <div class="form-note">
+        <span>ⓘ</span>
+        <span>
+          BMI is a general screening measure for adults and does not
+          diagnose individual health conditions.
+        </span>
+      </div>
+
+    </div>
+
+    <div class="result-area">
+
+      <section
+        class="result-section"
+        *ngIf="bmi !== null; else emptyResult"
+        aria-live="polite"
+      >
+
+        <span class="result-label">
+          YOUR BMI
+        </span>
+
+        <div class="bmi-value">
+          {{ bmi }}
+        </div>
+
+        <div
+          class="status"
+          [class.underweight]="recommendationClass === 'underweight'"
+          [class.normal]="recommendationClass === 'normal'"
+          [class.overweight]="recommendationClass === 'overweight'"
+          [class.obesity]="recommendationClass === 'obesity'"
+        >
+          {{ status }}
+        </div>
+
+        <p class="result-description">
+          Your BMI is calculated from your height and weight.
+          The category shown is a general adult reference.
+        </p>
+
+        <div class="recommendation-card">
+
+          <div
+            class="recommendation-icon"
+            [class.underweight]="recommendationClass === 'underweight'"
+            [class.normal]="recommendationClass === 'normal'"
+            [class.overweight]="recommendationClass === 'overweight'"
+            [class.obesity]="recommendationClass === 'obesity'"
+          >
+            {{ recommendationIcon }}
+          </div>
+
+          <div class="recommendation-content">
+
+            <span class="recommendation-label">
+              RECOMMENDATION
+            </span>
+
+            <h3>
+              {{ recommendationTitle }}
+            </h3>
+
+            <p>
+              {{ recommendation }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="weight-summary">
+
+          <div class="weight-summary-header">
+            <span>Weight Guidance</span>
+            <small>General BMI reference</small>
+          </div>
+
+          <div class="weight-summary-grid">
+
+            <div class="weight-summary-item">
+
+              <span>Current Weight</span>
+
+              <strong>
+                {{ displayCurrentWeight }}
+                {{ displayWeightUnit }}
+              </strong>
+
+            </div>
+
+            <div class="weight-summary-item">
+
+              <span>Healthy Range</span>
+
+              <strong>
+                {{ displayHealthyMinWeight }}
+                –
+                {{ displayHealthyMaxWeight }}
+                {{ displayWeightUnit }}
+              </strong>
+
+            </div>
+
+            <div
+              class="weight-summary-item highlight"
+              *ngIf="bmi < 18.5"
+            >
+
+              <span>Estimated Gain</span>
+
+              <strong>
+                +{{ displayWeightDifference }}
+                {{ displayWeightUnit }}
+              </strong>
+
+            </div>
+
+            <div
+              class="weight-summary-item highlight"
+              *ngIf="bmi >= 25"
+            >
+
+              <span>Estimated Reduction</span>
+
+              <strong>
+                -{{ displayWeightDifference }}
+                {{ displayWeightUnit }}
+              </strong>
+
+            </div>
+
+            <div
+              class="weight-summary-item highlight"
+              *ngIf="bmi >= 18.5 && bmi < 25"
+            >
+
+              <span>Weight Change</span>
+
+              <strong>
+                Maintain
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="bmi-reference">
+
+          <div class="bmi-reference-title">
+            BMI Categories
+          </div>
+
+          <div class="reference-grid">
+
+            <div
+              class="reference-item"
+              [class.current]="bmi < 18.5"
+            >
+              <strong>Underweight</strong>
+              <span>Below 18.5</span>
+            </div>
+
+            <div
+              class="reference-item"
+              [class.current]="bmi >= 18.5 && bmi < 25"
+            >
+              <strong>Normal</strong>
+              <span>18.5 – 24.9</span>
+            </div>
+
+            <div
+              class="reference-item"
+              [class.current]="bmi >= 25 && bmi < 30"
+            >
+              <strong>Overweight</strong>
+              <span>25 – 29.9</span>
+            </div>
+
+            <div
+              class="reference-item"
+              [class.current]="bmi >= 30"
+            >
+              <strong>Obesity</strong>
+              <span>30 or above</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <ng-template #emptyResult>
+
+        <div class="result-empty">
+
+          <div class="empty-icon">
+            ⚖️
+          </div>
+
+          <h3>
+            Your BMI Result
+          </h3>
+
+          <p>
+            Enter your height and weight, then calculate your BMI
+            to see your category and estimated healthy weight range.
+          </p>
+
+          <div class="empty-tip">
+            <span>💡</span>
+
+            <span>
+              You can switch between metric and imperial units
+              before calculating.
+            </span>
+          </div>
+
+        </div>
+
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>
+</section> <section class="content-container">
+<article class="content-card">
+
+  <div class="content-heading">
+
+    <div class="content-number">
+      01
+    </div>
+
+    <div>
+      <h2>What Is BMI?</h2>
+    </div>
+
+  </div>
+
+  <p>
+    Body Mass Index, commonly called BMI, is a calculation based on
+    a person's weight and height. It is commonly used as a general
+    screening measure to classify weight status in adults.
+  </p>
+
+  <p>
+    BMI does not directly measure body fat and should not be considered
+    a diagnosis. Factors such as muscle mass, age, body composition,
+    and overall health can affect how BMI should be interpreted.
+  </p>
+
+</article>
+
+<article class="content-card">
+
+  <div class="content-heading">
+
+    <div class="content-number">
+      02
+    </div>
+
+    <div>
+      <h2>How Is BMI Calculated?</h2>
+    </div>
+
+  </div>
+
+  <p>
+    BMI is calculated by dividing weight in kilograms by height in
+    meters squared.
+  </p>
+
+  <div class="formula-box">
+
+    <span>BMI</span>
+
+    <strong>
+      = Weight (kg) ÷ Height² (m)
+    </strong>
+
+  </div>
+
+  <p>
+    If you use feet, inches, or pounds, this calculator converts the
+    measurements internally before calculating BMI.
+  </p>
+
+</article>
+
+<article class="content-card">
+
+  <div class="content-heading">
+
+    <div class="content-number">
+      03
+    </div>
+
+    <div>
+      <h2>BMI Categories for Adults</h2>
+    </div>
+
+  </div>
+
+  <p>
+    The following categories are commonly used as general adult BMI
+    references.
+  </p>
+
+  <div class="category-table">
+
+    <div class="table-row table-header">
+      <span>Category</span>
+      <span>BMI Range</span>
+    </div>
+
+    <div class="table-row">
+      <strong>Underweight</strong>
+      <span>Below 18.5</span>
+    </div>
+
+    <div class="table-row">
+      <strong>Normal Weight</strong>
+      <span>18.5 – 24.9</span>
+    </div>
+
+    <div class="table-row">
+      <strong>Overweight</strong>
+      <span>25 – 29.9</span>
+    </div>
+
+    <div class="table-row">
+      <strong>Obesity</strong>
+      <span>30 or above</span>
+    </div>
+
+  </div>
+
+</article>
+
+<article class="content-card">
+
+  <div class="content-heading">
+
+    <div class="content-number">
+      04
+    </div>
+
+    <div>
+      <h2>Estimated Healthy Weight Range</h2>
+    </div>
+
+  </div>
+
+  <p>
+    This calculator estimates a general healthy weight range by applying
+    the adult BMI reference range of 18.5 to 24.9 to your height.
+  </p>
+
+  <p>
+    The result is an estimate rather than a personal medical target.
+    Body composition, muscle mass, age, and other health factors should
+    also be considered when evaluating weight.
+  </p>
+
+  <div class="unit-guide-grid">
+
+    <div class="unit-guide-card">
+
+      <div class="unit-guide-icon">
+        kg
+      </div>
+
+      <div>
+        <h3>Kilograms</h3>
+
+        <p>
+          Metric weight measurement.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="unit-guide-card">
+
+      <div class="unit-guide-icon">
+        lb
+      </div>
+
+      <div>
+        <h3>Pounds</h3>
+
+        <p>
+          Imperial weight measurement.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</article>
+
+<article class="content-card">
+
+  <div class="content-heading">
+
+    <div class="content-number">
+      05
+    </div>
+
+    <div>
+      <h2>Should You Gain or Lose Weight?</h2>
+    </div>
+
+  </div>
+
+  <p>
+    If your BMI is below 18.5, the calculator identifies your weight
+    as below the general adult BMI reference range. The estimated
+    difference shows how much weight would theoretically bring you
+    closer to the lower end of that range.
+  </p>
+
+  <p>
+    If your BMI is between 18.5 and 24.9, your weight is within the
+    general adult BMI reference range and the calculator recommends
+    maintaining your current weight.
+  </p>
+
+  <p>
+    If your BMI is 25 or higher, the calculator estimates the difference
+    between your current weight and the upper end of the general healthy
+    BMI range.
+  </p>
+
+</article>
+
+<section class="faq-card">
+
+  <div class="faq-header">
+
+    <span class="section-label">
+      FAQ
+    </span>
+
+    <h2>
+      Frequently Asked Questions
+    </h2>
+
+    <p>
+      Common questions about BMI calculations and weight guidance.
+    </p>
+
+  </div>
+
+  <div class="faq-list">
+
+    <details>
+
+      <summary>
+        What is a healthy BMI for adults?
+      </summary>
+
+      <p>
+        A BMI from 18.5 to 24.9 is commonly used as the general healthy
+        BMI reference range for adults.
+      </p>
+
+    </details>
+
+    <details>
+
+      <summary>
+        Does BMI tell me exactly how much body fat I have?
+      </summary>
+
+      <p>
+        No. BMI is a screening measure based on height and weight.
+        It does not directly measure body fat or body composition.
+      </p>
+
+    </details>
+
+    <details>
+
+      <summary>
+        What if my BMI is below 18.5?
+      </summary>
+
+      <p>
+        A BMI below 18.5 falls below the general adult BMI reference
+        range. The calculator provides an estimated weight difference,
+        but individual nutritional and health needs can vary.
+      </p>
+
+    </details>
+
+    <details>
+
+      <summary>
+        What if my BMI is above 25?
+      </summary>
+
+      <p>
+        A BMI of 25 or higher falls above the general adult BMI reference
+        range. The calculator provides an estimated difference from the
+        upper end of the range, but it should not be treated as a medical
+        weight-loss prescription.
+      </p>
+
+    </details>
+
+    <details>
+
+      <summary>
+        Can I use pounds and feet?
+      </summary>
+
+      <p>
+        Yes. Select ft & in for height and lb for weight. The calculator
+        converts these measurements internally before calculating BMI.
+      </p>
+
+    </details>
+
+  </div>
+
+</section>
+
+<div class="disclaimer-card">
+
+  <div class="disclaimer-icon">
+    ⓘ
+  </div>
+
+  <div>
+
+    <h3>
+      Health Information Disclaimer
+    </h3>
+
+    <p>
+      This BMI calculator provides general informational estimates for
+      adults. BMI is a screening measure and does not diagnose disease
+      or determine an individual's ideal body weight. Consider speaking
+      with a qualified healthcare professional for personalized advice.
+    </p>
+
+  </div>
+
+</div>
+</section> </main>

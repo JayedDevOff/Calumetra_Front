@@ -1,0 +1,914 @@
+<div class="cgpa-page">
+  <header class="page-header">
+    <span class="eyebrow">ACADEMIC PERFORMANCE TOOL</span>
+    <h1>CGPA CALCULATOR</h1>
+    <p>CALCULATE GPA, CGPA AND CONVERT YOUR GRADES EASILY.</p>
+  </header>
+
+  <section class="card grading-card">
+    <div class="section-heading centered-heading">
+      <div>
+        <h2>GRADING SYSTEM</h2>
+        <p>SELECT YOUR GRADING SCALE</p>
+      </div>
+    </div>
+
+    <div class="grading-options">
+      <button
+        type="button"
+        *ngFor="let system of gradeSystems"
+        class="grading-option"
+        [class.active]="selectedSystem === system"
+        (click)="selectSystem(system)"
+      >
+        <span class="grading-name">{{ system.name }}</span>
+        <span class="grading-max">Maximum {{ formatNumber(system.maxGpa) }}</span>
+      </button>
+    </div>
+
+    <div class="selected-scale">
+      <span>Selected Scale</span>
+      <strong>{{ selectedSystem.name }}</strong>
+      <span>Maximum GPA {{ formatNumber(selectedSystem.maxGpa) }}</span>
+    </div>
+  </section>
+
+  <nav class="calculator-tabs">
+    <button type="button" [class.active]="activeTab === 'gpa'" (click)="setTab('gpa')">
+      GPA Calculator
+    </button>
+
+    <button type="button" [class.active]="activeTab === 'cgpa'" (click)="setTab('cgpa')">
+      CGPA Calculator
+    </button>
+
+    <button type="button" [class.active]="activeTab === 'target'" (click)="setTab('target')">
+      Target CGPA
+    </button>
+
+    <button
+      type="button"
+      [class.active]="activeTab === 'conversion'"
+      (click)="setTab('conversion')"
+    >
+      GPA & CGPA Converter
+    </button>
+  </nav>
+
+  <section class="result-card" *ngIf="activeTab === 'gpa' || activeTab === 'cgpa'">
+    <div class="result-main">
+      <span class="result-label">
+        {{ activeTab === 'cgpa' ? 'YOUR OVERALL CGPA' : 'YOUR CURRENT GPA' }}
+      </span>
+
+      <div class="result-value">
+        {{ formatNumber(activeTab === 'cgpa' ? academicOverallCgpa : gpa) }}
+        <small>/ {{ formatNumber(selectedSystem.maxGpa) }}</small>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <span>Total Credits</span>
+        <strong>
+          {{ formatNumber(activeTab === 'cgpa' ? academicTotalCredits : totalCredits) }}
+        </strong>
+      </div>
+
+      <div class="result-item">
+        <span>Quality Points</span>
+        <strong>
+          {{ formatNumber(activeTab === 'cgpa' ? academicTotalQualityPoints : totalQualityPoints) }}
+        </strong>
+      </div>
+
+      <div class="result-item">
+        <span>Total Courses</span>
+        <strong>
+          {{ activeTab === 'cgpa' ? academicCourseCount : courseCount }}
+        </strong>
+      </div>
+
+      <div class="result-item">
+        <span>Percentage</span>
+        <strong>
+          {{
+            formatNumber(activeTab === 'cgpa' ? academicOverallPercentage : currentGpaPercentage())
+          }}%
+        </strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card course-card" *ngIf="activeTab === 'gpa'">
+    <div class="section-heading">
+      <div>
+        <span class="section-number">01</span>
+        <h2>GPA CALCULATOR</h2>
+        <p>Enter your courses, credits and grades to calculate your GPA.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn secondary" (click)="resetCourses()">Reset</button>
+
+        <button type="button" class="btn primary" (click)="addCourse()">
+          <span>+</span>
+          Add Course
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="course-table">
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Code</th>
+            <th>Credit</th>
+            <th>Grade</th>
+            <th>Grade Point</th>
+            <th>Quality Points</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let course of courses; let i = index">
+            <td>
+              <input type="text" [(ngModel)]="course.name" placeholder="Course name" />
+            </td>
+
+            <td>
+              <input type="text" [(ngModel)]="course.code" placeholder="Course code" />
+            </td>
+
+            <td>
+              <input
+                type="number"
+                min="0"
+                step="0.5"
+                [(ngModel)]="course.credit"
+                (ngModelChange)="updateCourse(course)"
+                placeholder="3"
+              />
+            </td>
+
+            <td>
+              <select [(ngModel)]="course.grade" (ngModelChange)="updateGrade(course)">
+                <option *ngFor="let grade of selectedSystem.grades" [value]="grade.letter">
+                  {{ grade.letter }}
+                </option>
+              </select>
+            </td>
+
+            <td class="calculated-cell">
+              {{ formatNumber(course.gradePoint) }}
+            </td>
+
+            <td class="calculated-cell">
+              {{ formatNumber(course.qualityPoint) }}
+            </td>
+
+            <td>
+              <div class="row-actions">
+                <button
+                  type="button"
+                  class="icon-btn duplicate"
+                  title="Duplicate"
+                  (click)="duplicateCourse(i)"
+                >
+                  ⧉
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-btn delete"
+                  title="Delete"
+                  (click)="removeCourse(i)"
+                >
+                  ×
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="course-footer">
+      <div>
+        <span>Courses</span>
+        <strong>{{ courseCount }}</strong>
+      </div>
+
+      <div>
+        <span>Credits</span>
+        <strong>{{ formatNumber(totalCredits) }}</strong>
+      </div>
+
+      <div>
+        <span>Quality Points</span>
+        <strong>{{ formatNumber(totalQualityPoints) }}</strong>
+      </div>
+
+      <div class="footer-highlight">
+        <span>GPA</span>
+        <strong>{{ formatNumber(gpa) }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card semester-section" *ngIf="activeTab === 'cgpa'">
+    <div class="section-heading">
+      <div>
+        <span class="section-number">02</span>
+        <h2>ACADEMIC RECORD</h2>
+        <p>Add your semesters and enter subjects one by one.</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn secondary" (click)="resetSemesters()">Reset All</button>
+
+        <button type="button" class="btn primary" (click)="addSemester()">
+          <span>+</span>
+          Add Semester
+        </button>
+      </div>
+    </div>
+
+    <div class="semester-list">
+      <section class="semester-card" *ngFor="let semester of semesters; let semesterIndex = index">
+        <div class="semester-header">
+          <div class="semester-title">
+            <span class="semester-number">
+              {{ semester.number }}
+            </span>
+
+            <div>
+              <span class="semester-label"> SEMESTER {{ semester.number }} </span>
+
+              <input
+                type="text"
+                class="semester-name"
+                [(ngModel)]="semester.name"
+                placeholder="Semester name"
+              />
+            </div>
+          </div>
+
+          <div class="semester-actions">
+            <button type="button" class="mini-btn" (click)="resetSemester(semester)">Reset</button>
+
+            <button
+              type="button"
+              class="mini-btn danger"
+              [disabled]="semesters.length === 1"
+              (click)="removeSemester(semesterIndex)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="course-table semester-table">
+            <thead>
+              <tr>
+                <th>Subject / Course</th>
+                <th>Code</th>
+                <th>Credit</th>
+                <th>Grade</th>
+                <th>Grade Point</th>
+                <th>Quality Points</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let course of semester.courses; let courseIndex = index">
+                <td>
+                  <input type="text" [(ngModel)]="course.name" placeholder="Subject name" />
+                </td>
+
+                <td>
+                  <input type="text" [(ngModel)]="course.code" placeholder="Course code" />
+                </td>
+
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    [(ngModel)]="course.credit"
+                    (ngModelChange)="updateSemesterCourse(course)"
+                    placeholder="3"
+                  />
+                </td>
+
+                <td>
+                  <select [(ngModel)]="course.grade" (ngModelChange)="updateSemesterGrade(course)">
+                    <option *ngFor="let grade of selectedSystem.grades" [value]="grade.letter">
+                      {{ grade.letter }}
+                    </option>
+                  </select>
+                </td>
+
+                <td class="calculated-cell">
+                  {{ formatNumber(course.gradePoint) }}
+                </td>
+
+                <td class="calculated-cell">
+                  {{ formatNumber(course.qualityPoint) }}
+                </td>
+
+                <td>
+                  <div class="row-actions">
+                    <button
+                      type="button"
+                      class="icon-btn duplicate"
+                      title="Duplicate"
+                      (click)="duplicateSemesterCourse(semester, courseIndex)"
+                    >
+                      ⧉
+                    </button>
+
+                    <button
+                      type="button"
+                      class="icon-btn delete"
+                      title="Delete"
+                      (click)="removeSemesterCourse(semester, courseIndex)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="semester-bottom">
+          <button type="button" class="add-subject-btn" (click)="addSemesterCourse(semester)">
+            <span>+</span>
+            Add Subject
+          </button>
+
+          <div class="semester-summary">
+            <div>
+              <span>Semester GPA</span>
+              <strong>{{ formatNumber(getSemesterGpa(semester)) }}</strong>
+            </div>
+
+            <div>
+              <span>Credits</span>
+              <strong>{{ formatNumber(getSemesterTotalCredits(semester)) }}</strong>
+            </div>
+
+            <div>
+              <span>Quality Points</span>
+              <strong>{{ formatNumber(getSemesterQualityPoints(semester)) }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="previous-record-card">
+      <div class="previous-record-header">
+        <div>
+          <h3>PREVIOUS ACADEMIC RECORD</h3>
+          <p>Use this option if you want to include semesters completed before this calculator.</p>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="usePreviousAcademicRecord" />
+
+          <span></span>
+        </label>
+      </div>
+
+      <div class="previous-record-fields" *ngIf="usePreviousAcademicRecord">
+        <div class="field-group">
+          <label>Previous CGPA</label>
+
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="previousCgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Previous Credits</label>
+
+          <input type="number" min="0" step="0.5" [(ngModel)]="previousCredits" />
+        </div>
+      </div>
+    </div>
+
+    <div class="academic-summary">
+      <div class="summary-title">
+        <span>ACADEMIC SUMMARY</span>
+        <strong>Overall Performance</strong>
+      </div>
+
+      <div class="academic-summary-grid">
+        <div class="academic-stat featured">
+          <span>Overall CGPA</span>
+          <strong>{{ formatNumber(academicOverallCgpa) }}</strong>
+          <small>/ {{ formatNumber(selectedSystem.maxGpa) }}</small>
+        </div>
+
+        <div class="academic-stat">
+          <span>Total Semesters</span>
+          <strong>{{ semesterCount }}</strong>
+        </div>
+
+        <div class="academic-stat">
+          <span>Total Courses</span>
+          <strong>{{ academicCourseCount }}</strong>
+        </div>
+
+        <div class="academic-stat">
+          <span>Total Credits</span>
+          <strong>{{ formatNumber(academicTotalCredits) }}</strong>
+        </div>
+
+        <div class="academic-stat">
+          <span>Quality Points</span>
+          <strong>{{ formatNumber(academicTotalQualityPoints) }}</strong>
+        </div>
+
+        <div class="academic-stat">
+          <span>Percentage</span>
+          <strong>{{ formatNumber(academicOverallPercentage) }}%</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card target-card" *ngIf="activeTab === 'target'">
+    <div class="section-heading">
+      <div>
+        <span class="section-number">03</span>
+        <h2>TARGET CGPA</h2>
+        <p>Find the GPA you need to reach your desired final CGPA.</p>
+      </div>
+    </div>
+
+    <div class="target-grid">
+      <div class="field-group">
+        <label>Current CGPA</label>
+
+        <input
+          type="number"
+          min="0"
+          [max]="selectedSystem.maxGpa"
+          step="0.01"
+          [(ngModel)]="previousCgpa"
+        />
+      </div>
+
+      <div class="field-group">
+        <label>Completed Credits</label>
+
+        <input type="number" min="0" step="0.5" [(ngModel)]="previousCredits" />
+      </div>
+
+      <div class="field-group">
+        <label>Target CGPA</label>
+
+        <input
+          type="number"
+          min="0"
+          [max]="selectedSystem.maxGpa"
+          step="0.01"
+          [(ngModel)]="targetCgpa"
+        />
+      </div>
+
+      <div class="field-group">
+        <label>Remaining Credits</label>
+
+        <input type="number" min="0" step="0.5" [(ngModel)]="remainingCredits" />
+      </div>
+    </div>
+
+    <div class="target-result">
+      <span>REQUIRED GPA</span>
+
+      <strong>{{ formatNumber(requiredGpa) }}</strong>
+
+      <small>/ {{ formatNumber(selectedSystem.maxGpa) }}</small>
+
+      <p>{{ targetMessage }}</p>
+    </div>
+  </section>
+
+  <section class="card conversion-card" *ngIf="activeTab === 'conversion'">
+    <div class="section-heading">
+      <div>
+        <span class="section-number">04</span>
+        <h2>GPA & CGPA CONVERTER</h2>
+        <p>Convert between common grading scales using proportional calculation.</p>
+      </div>
+
+      <button type="button" class="btn secondary" (click)="resetConversions()">Reset</button>
+    </div>
+
+    <div class="conversion-grid">
+      <div class="conversion-box">
+        <h3>CGPA TO GPA</h3>
+
+        <div class="field-group">
+          <label>CGPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="conversionCgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Target GPA Scale</label>
+          <select [(ngModel)]="conversionGpaScale">
+            <option [ngValue]="4">4.00 Scale</option>
+            <option [ngValue]="5">5.00 Scale</option>
+            <option [ngValue]="10">10.00 Scale</option>
+          </select>
+        </div>
+
+        <div class="conversion-result">
+          <span>Estimated GPA</span>
+          <strong>{{ formatNumber(convertedGpa) }}</strong>
+        </div>
+      </div>
+
+      <div class="conversion-box">
+        <h3>GPA TO CGPA</h3>
+
+        <div class="field-group">
+          <label>GPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="conversionGpaScale"
+            step="0.01"
+            [(ngModel)]="conversionGpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Source GPA Scale</label>
+          <select [(ngModel)]="conversionGpaScale">
+            <option [ngValue]="4">4.00 Scale</option>
+            <option [ngValue]="5">5.00 Scale</option>
+            <option [ngValue]="10">10.00 Scale</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Target CGPA Scale</label>
+          <select [(ngModel)]="conversionCgpaScale">
+            <option [ngValue]="4">4.00 Scale</option>
+            <option [ngValue]="5">5.00 Scale</option>
+            <option [ngValue]="10">10.00 Scale</option>
+          </select>
+        </div>
+
+        <div class="conversion-result">
+          <span>Estimated CGPA</span>
+          <strong>{{ formatNumber(convertedCgpa) }}</strong>
+        </div>
+      </div>
+
+      <div class="conversion-box">
+        <h3>PERCENTAGE TO GPA</h3>
+
+        <div class="field-group">
+          <label>Percentage</label>
+          <input type="number" min="0" max="100" step="0.01" [(ngModel)]="percentage" />
+        </div>
+
+        <div class="field-group">
+          <label>GPA Scale</label>
+          <select [(ngModel)]="percentageGpaScale">
+            <option [ngValue]="4">4.00 Scale</option>
+            <option [ngValue]="5">5.00 Scale</option>
+            <option [ngValue]="10">10.00 Scale</option>
+          </select>
+        </div>
+
+        <div class="conversion-result">
+          <span>Estimated GPA</span>
+          <strong>{{ formatNumber(percentageGpaResult) }}</strong>
+        </div>
+      </div>
+
+      <div class="conversion-box">
+        <h3>GRAND TOTAL TO CGPA</h3>
+
+        <div class="field-group">
+          <label>Total Grade Points</label>
+          <input type="number" min="0" step="0.01" [(ngModel)]="grandTotalGradePoints" />
+        </div>
+
+        <div class="field-group">
+          <label>Total Credits</label>
+          <input type="number" min="0" step="0.5" [(ngModel)]="grandTotalCredits" />
+        </div>
+
+        <div class="conversion-result">
+          <span>Estimated CGPA</span>
+          <strong>{{ formatNumber(grandTotalCgpa) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="conversion-note">
+      <strong>Important:</strong>
+      GPA and CGPA conversion formulas are not universally standardized. The results shown here are
+      proportional estimates. Always follow the official grading policy of your university or
+      evaluation authority.
+    </div>
+  </section>
+
+  <section class="card four-year-card">
+    <div class="section-heading">
+      <div>
+        <span class="section-number">05</span>
+        <h2>4-YEAR CGPA CALCULATOR</h2>
+        <p>Calculate your final CGPA using credit-weighted yearly results.</p>
+      </div>
+
+      <button type="button" class="btn secondary" (click)="resetFourYear()">Reset</button>
+    </div>
+
+    <div class="four-year-grid">
+      <div class="year-box">
+        <span class="year-number">01</span>
+        <h3>YEAR 1</h3>
+
+        <div class="field-group">
+          <label>CGPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="year1Cgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Credits</label>
+          <input type="number" min="0" step="0.5" [(ngModel)]="year1Credits" />
+        </div>
+      </div>
+
+      <div class="year-box">
+        <span class="year-number">02</span>
+        <h3>YEAR 2</h3>
+
+        <div class="field-group">
+          <label>CGPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="year2Cgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Credits</label>
+          <input type="number" min="0" step="0.5" [(ngModel)]="year2Credits" />
+        </div>
+      </div>
+
+      <div class="year-box">
+        <span class="year-number">03</span>
+        <h3>YEAR 3</h3>
+
+        <div class="field-group">
+          <label>CGPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="year3Cgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Credits</label>
+          <input type="number" min="0" step="0.5" [(ngModel)]="year3Credits" />
+        </div>
+      </div>
+
+      <div class="year-box">
+        <span class="year-number">04</span>
+        <h3>YEAR 4</h3>
+
+        <div class="field-group">
+          <label>CGPA</label>
+          <input
+            type="number"
+            min="0"
+            [max]="selectedSystem.maxGpa"
+            step="0.01"
+            [(ngModel)]="year4Cgpa"
+          />
+        </div>
+
+        <div class="field-group">
+          <label>Credits</label>
+          <input type="number" min="0" step="0.5" [(ngModel)]="year4Credits" />
+        </div>
+      </div>
+    </div>
+
+    <div class="four-year-result">
+      <div>
+        <span>Total Credits</span>
+        <strong>{{ formatNumber(fourYearTotalCredits) }}</strong>
+      </div>
+
+      <div>
+        <span>Total Quality Points</span>
+        <strong>{{ formatNumber(fourYearTotalQualityPoints) }}</strong>
+      </div>
+
+      <div>
+        <span>Final CGPA</span>
+        <strong>{{ formatNumber(fourYearCgpa) }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card grade-scale-card">
+    <div class="section-heading centered-heading">
+      <div>
+        <span class="section-number">06</span>
+        <h2>GRADE SCALE</h2>
+        <p>{{ selectedSystem.name }} grading reference</p>
+      </div>
+    </div>
+
+    <div class="grade-grid">
+      <div class="grade-item" *ngFor="let grade of selectedSystem.grades">
+        <strong>{{ grade.letter }}</strong>
+        <span>{{ formatNumber(grade.point) }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card seo-card">
+    <div class="seo-content">
+      <h2>CGPA Calculator</h2>
+
+      <p>
+        Our CGPA calculator helps students calculate GPA, semester GPA and overall CGPA using course
+        credits and grade points. Add semesters dynamically and enter your subjects one by one to
+        build a complete academic record.
+      </p>
+
+      <h2>CGPA to GPA Converter</h2>
+
+      <p>
+        Convert CGPA between common grading scales using a proportional calculation. Conversion
+        results should be treated as estimates because universities and credential evaluation
+        authorities may use different conversion policies.
+      </p>
+
+      <h2>GPA to CGPA Calculator</h2>
+
+      <p>
+        Enter your GPA and grading scale to estimate the equivalent CGPA on another grading scale.
+        The calculator supports 4.00, 5.00 and 10.00 scales.
+      </p>
+
+      <h2>Percentage to GPA Calculator</h2>
+
+      <p>
+        Convert a percentage into an estimated GPA based on your selected grading scale. This is a
+        proportional estimate and may differ from your institution's official conversion formula.
+      </p>
+
+      <h2>4-Year CGPA Calculator</h2>
+
+      <p>
+        Calculate a credit-weighted final CGPA from yearly academic results. Each year's CGPA is
+        multiplied by its corresponding credits before calculating the final result.
+      </p>
+
+      <h2>Grand Total to CGPA</h2>
+
+      <p>
+        If you already know your total grade points and total credits, you can calculate CGPA by
+        dividing total quality points by total credits.
+      </p>
+
+      <h2>How to Calculate CGPA</h2>
+
+      <p>
+        CGPA is calculated by dividing total quality points by total completed credits. Quality
+        points are calculated by multiplying each course's credit by its corresponding grade point.
+      </p>
+
+      <div class="formula-box">
+        <span>CGPA Formula</span>
+        <strong>CGPA = Total Quality Points ÷ Total Credits</strong>
+      </div>
+
+      <h2>How to Calculate GPA</h2>
+
+      <p>
+        GPA is calculated for a semester or group of courses by dividing the total quality points by
+        the total credits attempted during that period.
+      </p>
+
+      <div class="formula-box">
+        <span>GPA Formula</span>
+        <strong>GPA = Semester Quality Points ÷ Semester Credits</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card faq-card">
+    <div class="section-heading centered-heading">
+      <div>
+        <span class="section-number">07</span>
+        <h2>FREQUENTLY ASKED QUESTIONS</h2>
+        <p>Common questions about GPA and CGPA calculation.</p>
+      </div>
+    </div>
+
+    <div class="faq-list">
+      <details>
+        <summary>What is CGPA?</summary>
+        <p>
+          CGPA stands for Cumulative Grade Point Average. It represents the credit-weighted average
+          of grade points earned across multiple semesters or academic periods.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is GPA?</summary>
+        <p>GPA is the Grade Point Average for a particular semester or group of courses.</p>
+      </details>
+
+      <details>
+        <summary>How is CGPA calculated?</summary>
+        <p>
+          CGPA is calculated by dividing total quality points by total credits. Quality points are
+          obtained by multiplying course credits by grade points.
+        </p>
+      </details>
+
+      <details>
+        <summary>Can I add multiple semesters?</summary>
+        <p>
+          Yes. Add semesters dynamically and enter the courses completed in each semester. The
+          calculator automatically combines all semester results into your overall CGPA.
+        </p>
+      </details>
+
+      <details>
+        <summary>Can I add courses one by one?</summary>
+        <p>
+          Yes. Each semester starts with one course and you can add as many additional subjects as
+          required.
+        </p>
+      </details>
+
+      <details>
+        <summary>Is CGPA a simple average of semester GPAs?</summary>
+        <p>
+          No. A correct cumulative CGPA should normally be credit-weighted. Semester quality points
+          and credits are combined to calculate the overall result.
+        </p>
+      </details>
+
+      <details>
+        <summary>Can I use a 5.00 or 10.00 grading scale?</summary>
+        <p>Yes. The calculator supports 4.00, 5.00 and 10.00 grading scales.</p>
+      </details>
+
+      <details>
+        <summary>Are GPA conversions officially accurate?</summary>
+        <p>
+          Not necessarily. GPA and CGPA conversion policies vary by university, country and
+          credential evaluation authority. Conversion results from this calculator are proportional
+          estimates.
+        </p>
+      </details>
+    </div>
+  </section>
+</div>

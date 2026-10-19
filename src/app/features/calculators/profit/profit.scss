@@ -1,0 +1,711 @@
+:host {
+  display: block;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --primary: #e5322d;
+  --primary-dark: #c92723;
+  --primary-soft: #fff4f3;
+
+  --text: #171717;
+  --text-secondary: #55595f;
+  --muted: #777c82;
+
+  --border: #e7e8eb;
+  --border-light: #f0f1f2;
+
+  --surface: #ffffff;
+  --background: #f8f9fa;
+
+  --success: #17834b;
+  --success-soft: #eefaf3;
+
+  --danger: #d93636;
+  --danger-soft: #fff1f1;
+
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.profit-margin-page {
+  width: 100%;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(229, 50, 45, 0.035), transparent 28%),
+    radial-gradient(circle at 90% 10%, rgba(229, 50, 45, 0.025), transparent 25%),
+    var(--background);
+  padding: 46px 24px 80px;
+}
+
+.calculator-header {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto 30px;
+}
+
+.header-content {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 42px 46px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.045);
+}
+
+.header-content::after {
+  content: '';
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  right: -80px;
+  top: -110px;
+  border-radius: 50%;
+  background: rgba(229, 50, 45, 0.06);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 13px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1;
+  font-weight: 850;
+  letter-spacing: -1.2px;
+}
+
+.header-content p {
+  max-width: 670px;
+  margin: 13px 0 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.calculator-layout {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.065);
+  border-color: #dedfe2;
+}
+
+.calculator-card,
+.result-card {
+  padding: 30px;
+}
+
+.section-heading {
+  margin-bottom: 28px;
+}
+
+.section-heading > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.section-number {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.section-heading h2,
+.result-top h2 {
+  margin: 1px 0 4px;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.section-heading p,
+.result-top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 21px 17px;
+}
+
+.form-group {
+  min-width: 0;
+}
+
+.form-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 9px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.form-group label span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 450;
+}
+
+.input-wrapper,
+.select-wrapper {
+  position: relative;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 1;
+}
+
+input,
+select {
+  width: 100%;
+  height: 50px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+input {
+  padding: 0 15px 0 39px;
+}
+
+select {
+  appearance: none;
+  cursor: pointer;
+  padding: 0 42px 0 15px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #777 50%),
+    linear-gradient(135deg, #777 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 21px,
+    calc(100% - 13px) 21px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+input:hover,
+select:hover {
+  border-color: #d4d6d9;
+}
+
+input:focus,
+select:focus {
+  border-color: rgba(229, 50, 45, 0.65);
+  box-shadow: 0 0 0 4px rgba(229, 50, 45, 0.08);
+}
+
+input::placeholder {
+  color: #b1b4b8;
+}
+
+.quick-values {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.quick-values button {
+  height: 38px;
+  padding: 0 15px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.quick-values button:hover {
+  border-color: rgba(229, 50, 45, 0.35);
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.result-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  top: -105px;
+  right: -80px;
+  border-radius: 50%;
+  background: rgba(229, 50, 45, 0.045);
+  pointer-events: none;
+}
+
+.result-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.margin-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  height: 90px;
+  padding: 10px;
+  border: 1px solid rgba(23, 131, 75, 0.18);
+  border-radius: 18px;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.margin-badge strong {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: -0.5px;
+}
+
+.margin-badge span {
+  margin-top: 7px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.margin-badge.negative {
+  border-color: rgba(217, 54, 54, 0.18);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.main-result {
+  margin: 27px 0 23px;
+  padding: 24px;
+  border: 1px solid var(--border-light);
+  border-radius: 17px;
+  background: linear-gradient(145deg, #fff, #fafafa);
+}
+
+.main-result > span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.main-result strong {
+  display: block;
+  margin: 7px 0 5px;
+  font-size: clamp(32px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -1.5px;
+  font-weight: 850;
+}
+
+.main-result small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.profit-positive {
+  color: var(--success);
+}
+
+.profit-negative {
+  color: var(--danger);
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 15px;
+  background: var(--border-light);
+}
+
+.result-item {
+  min-width: 0;
+  padding: 16px;
+  background: #fff;
+}
+
+.result-item span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.result-item strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formula-card,
+.guide-card {
+  width: 100%;
+  max-width: 1180px;
+  margin: 22px auto 0;
+  padding: 30px;
+}
+
+.formula-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.formula-box {
+  min-height: 155px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: #fff;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.formula-box:hover {
+  transform: translateY(-3px);
+  border-color: rgba(229, 50, 45, 0.25);
+  background: var(--primary-soft);
+}
+
+.formula-box span {
+  display: block;
+  margin-bottom: 11px;
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1px;
+}
+
+.formula-box strong {
+  display: block;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.formula-box p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: #fff;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.step:hover {
+  transform: translateY(-2px);
+  border-color: rgba(229, 50, 45, 0.22);
+}
+
+.step > span {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.step h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.faq-section {
+  width: 100%;
+  max-width: 1180px;
+  margin: 58px auto 0;
+}
+
+.faq-heading {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  text-align: center;
+}
+
+.faq-heading > span {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.4px;
+}
+
+.faq-heading h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.2;
+  font-weight: 850;
+  letter-spacing: -0.7px;
+}
+
+.faq-heading p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.faq-grid details {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.faq-grid details:hover {
+  border-color: #d8dadd;
+}
+
+.faq-grid details[open] {
+  border-color: rgba(229, 50, 45, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.035);
+}
+
+.faq-grid summary {
+  position: relative;
+  padding: 18px 45px 18px 19px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-grid summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-grid summary::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  right: 19px;
+  transform: translateY(-50%);
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.faq-grid details[open] summary::after {
+  content: '−';
+}
+
+.faq-grid details p {
+  margin: 0;
+  padding: 0 19px 19px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 950px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .formula-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .profit-margin-page {
+    padding: 24px 14px 55px;
+  }
+
+  .header-content {
+    padding: 30px 22px;
+    border-radius: 18px;
+  }
+
+  .header-content h1 {
+    font-size: 29px;
+  }
+
+  .calculator-card,
+  .result-card,
+  .formula-card,
+  .guide-card {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .result-top {
+    flex-direction: column;
+  }
+
+  .margin-badge {
+    width: 90px;
+    align-self: flex-start;
+  }
+
+  .formula-grid,
+  .steps,
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .formula-box {
+    min-height: auto;
+  }
+
+  .quick-values {
+    justify-content: stretch;
+  }
+
+  .quick-values button {
+    flex: 1;
+  }
+
+  .main-result {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-item {
+    padding: 14px;
+  }
+
+  .section-heading {
+    margin-bottom: 22px;
+  }
+}

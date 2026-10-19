@@ -1,0 +1,475 @@
+<div class="paycheck-page">
+  <div class="paycheck-container">
+    <header class="hero-section">
+      <div class="hero-content">
+        <div class="hero-icon" aria-hidden="true">💵</div>
+
+        <div>
+          <div class="eyebrow">FINANCE CALCULATOR</div>
+
+          <h1>Paycheck Calculator</h1>
+
+          <p>Estimate your take-home pay after taxes and deductions.</p>
+        </div>
+      </div>
+
+      <div class="secure-badge">
+        <span>✓</span>
+        Free &amp; Private
+      </div>
+    </header>
+
+    <main>
+      <section class="calculator-layout" aria-label="Paycheck calculator">
+        <div class="input-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Your Paycheck</h2>
+              <p>Enter your income and deduction details.</p>
+            </div>
+
+            <div class="heading-number">01</div>
+          </div>
+
+          <div class="field">
+            <label for="currency"> Currency </label>
+
+            <div class="select-wrapper">
+              <select id="currency" name="currency" [(ngModel)]="currency">
+                <option *ngFor="let item of currencies" [value]="item.code">
+                  {{ item.symbol }} {{ item.code }} — {{ item.name }}
+                </option>
+              </select>
+
+              <span aria-hidden="true">⌄</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="grossSalary"> Gross Pay </label>
+
+            <div class="money-input">
+              <span class="currency" aria-hidden="true">
+                {{ selectedCurrency.symbol }}
+              </span>
+
+              <input
+                id="grossSalary"
+                name="grossSalary"
+                type="number"
+                [(ngModel)]="grossSalary"
+                min="0"
+                inputmode="decimal"
+                placeholder="5,000"
+                aria-label="Gross pay"
+              />
+
+              <span class="input-label">
+                {{ payFrequency }}
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="payFrequency"> Pay Frequency </label>
+
+            <div class="select-wrapper">
+              <select id="payFrequency" name="payFrequency" [(ngModel)]="payFrequency">
+                <option value="Weekly">Weekly</option>
+
+                <option value="Biweekly">Biweekly</option>
+
+                <option value="Semimonthly">Semimonthly</option>
+
+                <option value="Monthly">Monthly</option>
+
+                <option value="Annually">Annually</option>
+              </select>
+
+              <span aria-hidden="true">⌄</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="section-heading">
+            <div>
+              <h3>Taxes &amp; Deductions</h3>
+              <p>Adjust the percentages for your paycheck.</p>
+            </div>
+
+            <div class="heading-number">02</div>
+          </div>
+
+          <div class="two-columns">
+            <div class="field">
+              <label for="federalTax"> Federal Tax </label>
+
+              <div class="percent-input">
+                <input
+                  id="federalTax"
+                  name="federalTax"
+                  type="number"
+                  [(ngModel)]="federalTax"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  inputmode="decimal"
+                />
+
+                <span>%</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="stateTax"> State Tax </label>
+
+              <div class="percent-input">
+                <input
+                  id="stateTax"
+                  name="stateTax"
+                  type="number"
+                  [(ngModel)]="stateTax"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  inputmode="decimal"
+                />
+
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="two-columns">
+            <div class="field">
+              <label for="socialSecurity"> Social Security </label>
+
+              <div class="percent-input">
+                <input
+                  id="socialSecurity"
+                  name="socialSecurity"
+                  type="number"
+                  [(ngModel)]="socialSecurity"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  inputmode="decimal"
+                />
+
+                <span>%</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="medicare"> Medicare </label>
+
+              <div class="percent-input">
+                <input
+                  id="medicare"
+                  name="medicare"
+                  type="number"
+                  [(ngModel)]="medicare"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  inputmode="decimal"
+                />
+
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="otherDeductions"> Other Deductions </label>
+
+            <div class="money-input">
+              <span class="currency" aria-hidden="true">
+                {{ selectedCurrency.symbol }}
+              </span>
+
+              <input
+                id="otherDeductions"
+                name="otherDeductions"
+                type="number"
+                [(ngModel)]="otherDeductions"
+                min="0"
+                inputmode="decimal"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <button class="calculate-button" type="button" (click)="calculatePaycheck()">
+            <span> Calculate My Paycheck </span>
+
+            <span class="button-arrow" aria-hidden="true"> → </span>
+          </button>
+
+          <div class="privacy-note">
+            <span aria-hidden="true">🔒</span>
+            Your information stays in your browser.
+          </div>
+        </div>
+
+        <section class="result-panel" aria-labelledby="result-title">
+          <div class="result-header">
+            <div>
+              <span class="result-label"> ESTIMATED TAKE-HOME PAY </span>
+
+              <div id="result-title" class="net-pay" aria-live="polite">
+                {{ formatCurrency(netPay) }}
+              </div>
+
+              <span class="result-frequency"> Per {{ payFrequency.toLowerCase() }} </span>
+            </div>
+
+            <div class="result-check" aria-hidden="true">✓</div>
+          </div>
+
+          <div class="result-body">
+            <div class="breakdown-title">
+              <div>
+                <h3>Pay Breakdown</h3>
+
+                <span> Where your gross pay goes </span>
+              </div>
+
+              <strong>
+                {{ formatCurrency(grossSalary) }}
+              </strong>
+            </div>
+
+            <div
+              class="salary-bar"
+              role="progressbar"
+              [attr.aria-valuenow]="netPercentage"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Take-home pay percentage"
+            >
+              <div class="net-bar" [style.width.%]="netPercentage"></div>
+
+              <div class="deduction-bar" [style.width.%]="deductionPercentage"></div>
+            </div>
+
+            <div class="bar-info">
+              <div>
+                <span class="dot net-dot"></span>
+
+                <span> Take-home </span>
+
+                <strong>
+                  {{ formatCurrency(netPay) }}
+                </strong>
+              </div>
+
+              <div>
+                <span class="dot deduction-dot"></span>
+
+                <span> Deductions </span>
+
+                <strong>
+                  {{ formatCurrency(totalDeductions) }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="breakdown-list">
+              <div class="breakdown-row gross-row">
+                <div class="row-left">
+                  <span class="row-icon gross-icon">
+                    {{ selectedCurrency.symbol }}
+                  </span>
+
+                  <div>
+                    <strong> Gross Pay </strong>
+
+                    <small> Before deductions </small>
+                  </div>
+                </div>
+
+                <strong>
+                  {{ formatCurrency(grossSalary) }}
+                </strong>
+              </div>
+
+              <div class="breakdown-row">
+                <div class="row-left">
+                  <span class="row-icon"> F </span>
+
+                  <div>
+                    <strong> Federal Tax </strong>
+
+                    <small> {{ federalTax }}% of gross </small>
+                  </div>
+                </div>
+
+                <strong class="deduction-value"> − {{ formatCurrency(federalAmount) }} </strong>
+              </div>
+
+              <div class="breakdown-row">
+                <div class="row-left">
+                  <span class="row-icon"> S </span>
+
+                  <div>
+                    <strong> State Tax </strong>
+
+                    <small> {{ stateTax }}% of gross </small>
+                  </div>
+                </div>
+
+                <strong class="deduction-value"> − {{ formatCurrency(stateAmount) }} </strong>
+              </div>
+
+              <div class="breakdown-row">
+                <div class="row-left">
+                  <span class="row-icon"> SS </span>
+
+                  <div>
+                    <strong> Social Security </strong>
+
+                    <small> {{ socialSecurity }}% of gross </small>
+                  </div>
+                </div>
+
+                <strong class="deduction-value">
+                  − {{ formatCurrency(socialSecurityAmount) }}
+                </strong>
+              </div>
+
+              <div class="breakdown-row">
+                <div class="row-left">
+                  <span class="row-icon"> M </span>
+
+                  <div>
+                    <strong> Medicare </strong>
+
+                    <small> {{ medicare }}% of gross </small>
+                  </div>
+                </div>
+
+                <strong class="deduction-value"> − {{ formatCurrency(medicareAmount) }} </strong>
+              </div>
+
+              <div class="breakdown-row" *ngIf="otherDeductions > 0">
+                <div class="row-left">
+                  <span class="row-icon"> O </span>
+
+                  <div>
+                    <strong> Other Deductions </strong>
+
+                    <small> Additional deductions </small>
+                  </div>
+                </div>
+
+                <strong class="deduction-value"> − {{ formatCurrency(otherDeductions) }} </strong>
+              </div>
+            </div>
+
+            <div class="final-pay">
+              <div>
+                <span> NET PAY </span>
+
+                <small> What you take home </small>
+              </div>
+
+              <strong>
+                {{ formatCurrency(netPay) }}
+              </strong>
+            </div>
+
+            <div class="result-tip">
+              <span aria-hidden="true"> 💡 </span>
+
+              <p>
+                Your estimated take-home pay is
+                <strong> {{ netPercentage.toFixed(1) }}% </strong>
+                of your gross pay.
+              </p>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="bottom-note">
+      <div>
+        <span aria-hidden="true"> ⓘ </span>
+
+        <p>
+          This calculator provides an estimate only. Actual paycheck amounts may vary depending on
+          your tax situation and employer deductions.
+        </p>
+      </div>
+    </div>
+
+    <section class="seo-content" aria-labelledby="paycheck-guide-title">
+      <h2 id="paycheck-guide-title">Paycheck Calculator</h2>
+
+      <p>
+        Our free Paycheck Calculator helps you estimate your take-home pay after taxes and
+        deductions. Enter your gross salary, choose your pay frequency, select your currency, and
+        adjust your tax rates to calculate your estimated net pay.
+      </p>
+
+      <h2>How to Calculate Take-Home Pay</h2>
+
+      <p>
+        Take-home pay is calculated by subtracting taxes and other deductions from your gross pay.
+        Enter your gross income and applicable deductions above to get an estimate of the amount you
+        may receive after deductions.
+      </p>
+
+      <h3>What Is Gross Pay?</h3>
+
+      <p>
+        Gross pay is the total amount you earn before taxes, insurance, retirement contributions,
+        and other deductions are taken out.
+      </p>
+
+      <h3>What Is Net Pay?</h3>
+
+      <p>
+        Net pay is the amount remaining after taxes and other deductions. It is commonly known as
+        take-home pay.
+      </p>
+
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item">
+        <h3>What is a paycheck calculator?</h3>
+
+        <p>
+          A paycheck calculator estimates your take-home pay by subtracting taxes and other
+          deductions from your gross income.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>What is the difference between gross pay and net pay?</h3>
+
+        <p>
+          Gross pay is your total earnings before deductions, while net pay is the amount you
+          receive after taxes and other deductions.
+        </p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can I calculate weekly and monthly pay?</h3>
+
+        <p>Yes. You can calculate weekly, biweekly, semimonthly, monthly, or annual pay.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Does this calculator support multiple currencies?</h3>
+
+        <p>
+          Yes. You can select from multiple international currencies including USD, BDT, EUR, GBP,
+          INR, CAD, AUD, JPY, AED, SAR, and more.
+        </p>
+      </div>
+    </section>
+  </div>
+</div>

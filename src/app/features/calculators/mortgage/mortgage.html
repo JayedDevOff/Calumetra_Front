@@ -1,0 +1,277 @@
+<div class="mortgage-page">
+  <section class="mortgage-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>Mortgage Calculator</span>
+      </div>
+
+      <h1>Mortgage Calculator</h1>
+
+      <p>
+        Estimate your monthly mortgage payment, total interest, and total cost of your home loan
+        with our simple mortgage calculator.
+      </p>
+
+      <div class="hero-points">
+        <span>✓ Monthly Payment</span>
+        <span>✓ Total Interest</span>
+        <span>✓ Loan Breakdown</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="calculator-wrapper">
+    <section class="calculator-card">
+      <div class="section-heading">
+        <div class="section-icon">
+          <span>⌂</span>
+        </div>
+
+        <div>
+          <h2>Loan Details</h2>
+          <p>Enter your home loan information below</p>
+        </div>
+      </div>
+
+      <form [formGroup]="mortgageForm" (ngSubmit)="calculateMortgage()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="homePrice">Home Price</label>
+
+            <div class="input-wrapper">
+              <span class="input-prefix">$</span>
+              <input
+                id="homePrice"
+                type="number"
+                formControlName="homePrice"
+                placeholder="300,000"
+                min="0"
+              />
+            </div>
+
+            <small class="error" *ngIf="isInvalid('homePrice')">
+              Please enter a valid home price.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="downPayment">Down Payment</label>
+
+            <div class="input-wrapper">
+              <span class="input-prefix">$</span>
+              <input
+                id="downPayment"
+                type="number"
+                formControlName="downPayment"
+                placeholder="60,000"
+                min="0"
+              />
+            </div>
+
+            <small class="error" *ngIf="isInvalid('downPayment')">
+              Down payment must be less than the home price.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="interestRate">Interest Rate</label>
+
+            <div class="input-wrapper">
+              <input
+                id="interestRate"
+                type="number"
+                formControlName="interestRate"
+                placeholder="6.5"
+                min="0"
+                step="0.01"
+              />
+              <span class="input-suffix">%</span>
+            </div>
+
+            <small class="error" *ngIf="isInvalid('interestRate')">
+              Please enter a valid interest rate.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="loanTerm">Loan Term</label>
+
+            <div class="input-wrapper">
+              <input
+                id="loanTerm"
+                type="number"
+                formControlName="loanTerm"
+                placeholder="30"
+                min="1"
+                max="50"
+              />
+              <span class="input-suffix">Years</span>
+            </div>
+
+            <small class="error" *ngIf="isInvalid('loanTerm')">
+              Please enter a valid loan term.
+            </small>
+          </div>
+        </div>
+
+        <div class="loan-summary">
+          <div class="summary-item">
+            <span class="summary-label">Down Payment</span>
+            <strong>{{ downPaymentPercentage | number: '1.0-1' }}%</strong>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Loan Amount</span>
+            <strong>${{ loanAmount | number: '1.0-0' }}</strong>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Loan Period</span>
+            <strong>{{ loanTermLabel }}</strong>
+          </div>
+        </div>
+
+        <button type="submit" class="calculate-btn" [disabled]="mortgageForm.invalid">
+          <span>Calculate Mortgage</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+    </section>
+
+    <div class="result-layout" *ngIf="calculated">
+      <section class="result-card result-main-card">
+        <div class="result-header">
+          <div class="result-main">
+            <span class="result-label"> Estimated Monthly Payment </span>
+
+            <h2>${{ monthlyPayment | number: '1.0-0' }}</h2>
+
+            <p>Your estimated principal and interest payment</p>
+          </div>
+
+          <div class="payment-circle">
+            <div class="circle-inner">
+              <strong>{{ principalPercentage | number: '1.0-0' }}%</strong>
+              <span>Principal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-stats">
+          <div class="stat-card">
+            <span class="stat-icon">$</span>
+            <div>
+              <span class="stat-label">Loan Amount</span>
+              <strong>${{ loanAmount | number: '1.0-0' }}</strong>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">%</span>
+            <div>
+              <span class="stat-label">Total Interest</span>
+              <strong>${{ totalInterest | number: '1.0-0' }}</strong>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">↗</span>
+            <div>
+              <span class="stat-label">Total Payment</span>
+              <strong>${{ totalPayment | number: '1.0-0' }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="result-card result-breakdown-card">
+        <div class="breakdown-card">
+          <div class="breakdown-header">
+            <div>
+              <span class="breakdown-label">Payment Breakdown</span>
+              <h3>Principal vs. Interest</h3>
+            </div>
+
+            <span class="breakdown-period">
+              {{ loanTermLabel }}
+            </span>
+          </div>
+
+          <div class="breakdown-visual">
+            <div class="breakdown-bar">
+              <div class="donut-chart" [style.--principal]="principalPercentage + '%'">
+                <div class="donut-center">
+                  <strong>{{ principalPercentage | number: '1.0-0' }}%</strong>
+                  <span>Principal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="breakdown-details">
+              <div class="breakdown-row">
+                <div class="breakdown-name">
+                  <span class="dot principal"></span>
+                  <span>Principal</span>
+                </div>
+
+                <strong> {{ principalPercentage | number: '1.0-0' }}% </strong>
+              </div>
+
+              <div class="breakdown-row">
+                <div class="breakdown-name">
+                  <span class="dot interest"></span>
+                  <span>Interest</span>
+                </div>
+
+                <strong> {{ interestPercentage | number: '1.0-0' }}% </strong>
+              </div>
+
+              <div class="breakdown-total">
+                <span>Total Cost</span>
+                <strong> ${{ totalPayment | number: '1.0-0' }} </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="result-info" *ngIf="calculated">
+      <div class="info-icon">i</div>
+
+      <div>
+        <h3>Understanding Your Mortgage</h3>
+
+        <p>
+          Your monthly mortgage payment is calculated using the loan amount, interest rate, and loan
+          term. The total interest represents the amount you may pay in interest over the entire
+          loan period.
+        </p>
+      </div>
+    </section>
+
+    <div class="result-footer" *ngIf="calculated">
+      <div class="footer-item">
+        <span>Interest Rate</span>
+        <strong> {{ mortgageForm.get('interestRate')?.value }}% </strong>
+      </div>
+
+      <div class="footer-item">
+        <span>Loan Term</span>
+        <strong>
+          {{ loanTermLabel }}
+        </strong>
+      </div>
+
+      <div class="footer-item">
+        <span>Monthly Interest</span>
+        <strong> ${{ monthlyInterest | number: '1.0-0' }} </strong>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      This mortgage calculator provides an estimate for informational purposes only. Actual mortgage
+      payments may vary depending on taxes, insurance, fees, lender terms, and other costs.
+    </p>
+  </main>
+</div>

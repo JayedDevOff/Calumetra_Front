@@ -1,0 +1,335 @@
+<div class="profit-margin-page">
+
+  <div class="calculator-header">
+    <div class="header-content">
+      <span class="eyebrow">BUSINESS CALCULATOR</span>
+      <h1>PROFIT MARGIN CALCULATOR</h1>
+      <p>Calculate profit, profit margin, markup, and revenue quickly and accurately.</p>
+    </div>
+  </div>
+
+  <div class="calculator-layout">
+
+    <section class="card calculator-card">
+
+      <div class="section-heading">
+        <div>
+          <span class="section-number">01</span>
+          <div>
+            <h2>CALCULATE YOUR PROFIT</h2>
+            <p>Enter your sales and cost information below.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="revenue">
+            Revenue
+            <span>Sales amount</span>
+          </label>
+
+          <div class="input-wrapper">
+            <span class="currency-symbol">{{ currencySymbol }}</span>
+            <input
+              id="revenue"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="revenue"
+              (input)="calculate()"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cost">
+            Cost of Goods Sold
+            <span>Product or service cost</span>
+          </label>
+
+          <div class="input-wrapper">
+            <span class="currency-symbol">{{ currencySymbol }}</span>
+            <input
+              id="cost"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="costOfGoods"
+              (input)="calculate()"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expenses">
+            Operating Expenses
+            <span>Additional business expenses</span>
+          </label>
+
+          <div class="input-wrapper">
+            <span class="currency-symbol">{{ currencySymbol }}</span>
+            <input
+              id="expenses"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="operatingExpenses"
+              (input)="calculate()"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="currency">
+            Currency
+            <span>Select your currency</span>
+          </label>
+
+          <div class="select-wrapper">
+            <select
+              id="currency"
+              [(ngModel)]="currency"
+              (change)="calculate()"
+            >
+              <option value="USD">USD — US Dollar</option>
+              <option value="EUR">EUR — Euro</option>
+              <option value="GBP">GBP — British Pound</option>
+              <option value="BDT">BDT — Bangladeshi Taka</option>
+              <option value="INR">INR — Indian Rupee</option>
+              <option value="CAD">CAD — Canadian Dollar</option>
+              <option value="AUD">AUD — Australian Dollar</option>
+              <option value="JPY">JPY — Japanese Yen</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="quick-values">
+        <button type="button" (click)="setExample(10000, 4000, 1500)">
+          Example
+        </button>
+
+        <button type="button" (click)="clearCalculator()">
+          Clear All
+        </button>
+      </div>
+
+    </section>
+
+    <section class="card result-card">
+
+      <div class="result-top">
+        <div>
+          <span class="section-number">02</span>
+          <h2>YOUR RESULTS</h2>
+          <p>Here's a breakdown of your profitability.</p>
+        </div>
+
+        <div
+          class="margin-badge"
+          [class.positive]="netProfit >= 0"
+          [class.negative]="netProfit < 0"
+        >
+          <strong>{{ profitMargin | number:'1.0-2' }}%</strong>
+          <span>NET MARGIN</span>
+        </div>
+      </div>
+
+      <div class="main-result">
+        <span>NET PROFIT</span>
+
+        <strong
+          [class.profit-positive]="netProfit >= 0"
+          [class.profit-negative]="netProfit < 0"
+        >
+          {{ currencySymbol }}{{ formatNumber(netProfit) }}
+        </strong>
+
+        <small>
+          {{ netProfit >= 0 ? 'Your business is currently profitable.' : 'Your current costs are higher than your revenue.' }}
+        </small>
+      </div>
+
+      <div class="result-grid">
+
+        <div class="result-item">
+          <span>Revenue</span>
+          <strong>{{ currencySymbol }}{{ formatNumber(revenue) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Total Costs</span>
+          <strong>{{ currencySymbol }}{{ formatNumber(totalCosts) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Gross Profit</span>
+          <strong>{{ currencySymbol }}{{ formatNumber(grossProfit) }}</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Gross Margin</span>
+          <strong>{{ grossMargin | number:'1.0-2' }}%</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Net Margin</span>
+          <strong>{{ profitMargin | number:'1.0-2' }}%</strong>
+        </div>
+
+        <div class="result-item">
+          <span>Markup</span>
+          <strong>{{ markup | number:'1.0-2' }}%</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <section class="card formula-card">
+
+    <div class="section-heading">
+      <div>
+        <span class="section-number">03</span>
+        <div>
+          <h2>PROFITABILITY FORMULAS</h2>
+          <p>Understand how your profit margin is calculated.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-grid">
+
+      <div class="formula-box">
+        <span>NET PROFIT</span>
+        <strong>Revenue − Total Costs</strong>
+        <p>Your remaining earnings after all entered costs.</p>
+      </div>
+
+      <div class="formula-box">
+        <span>PROFIT MARGIN</span>
+        <strong>(Net Profit ÷ Revenue) × 100</strong>
+        <p>The percentage of revenue retained as profit.</p>
+      </div>
+
+      <div class="formula-box">
+        <span>GROSS PROFIT</span>
+        <strong>Revenue − COGS</strong>
+        <p>Profit remaining after the direct cost of goods.</p>
+      </div>
+
+      <div class="formula-box">
+        <span>MARKUP</span>
+        <strong>(Profit ÷ Cost) × 100</strong>
+        <p>How much your selling price exceeds your cost.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="card guide-card">
+
+    <div class="section-heading">
+      <div>
+        <span class="section-number">04</span>
+        <div>
+          <h2>HOW TO USE THIS CALCULATOR</h2>
+          <p>Calculate your business profitability in a few simple steps.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <span>01</span>
+        <div>
+          <h3>Enter your revenue</h3>
+          <p>Enter the total amount generated from your sales.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <span>02</span>
+        <div>
+          <h3>Add your product costs</h3>
+          <p>Enter the cost associated with producing or purchasing your products.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <span>03</span>
+        <div>
+          <h3>Add operating expenses</h3>
+          <p>Include expenses such as salaries, rent, marketing, and other operating costs.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <span>04</span>
+        <div>
+          <h3>Review your results</h3>
+          <p>Your profit, margin, gross margin, and markup are calculated automatically.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="faq-section">
+
+    <div class="faq-heading">
+      <span>FAQ</span>
+      <h2>Frequently Asked Questions</h2>
+      <p>Learn more about profit margins and business profitability.</p>
+    </div>
+
+    <div class="faq-grid">
+
+      <details>
+        <summary>What is a profit margin?</summary>
+        <p>
+          Profit margin is the percentage of revenue that remains as profit
+          after deducting costs and expenses.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is the difference between margin and markup?</summary>
+        <p>
+          Margin measures profit as a percentage of selling price, while
+          markup measures profit as a percentage of cost.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is gross profit?</summary>
+        <p>
+          Gross profit is revenue minus the direct cost of goods or services
+          sold. It does not include operating expenses.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is net profit?</summary>
+        <p>
+          Net profit is the amount remaining after deducting both direct costs
+          and operating expenses from revenue.
+        </p>
+      </details>
+
+    </div>
+
+  </section>
+
+</div>

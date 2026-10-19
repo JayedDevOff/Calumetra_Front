@@ -1,0 +1,22 @@
+#initial-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+
+  opacity: 1;
+  visibility: visible;
+
+  transition: opacity .4s ease, visibility .4s ease;
+}
+
+#initial-loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

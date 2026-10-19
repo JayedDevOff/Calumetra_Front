@@ -1,0 +1,100 @@
+<div class="calculator-wrapper">
+
+  <div class="calculator-card">
+
+    <div class="card-header">
+      <div class="header-icon">৳</div>
+
+      <div>
+        <h2>Jewellery Calculator</h2>
+        <p>Calculate jewellery price easily</p>
+      </div>
+    </div>
+
+    <div class="calculator-body">
+
+      <!-- Calculation Type -->
+      <div class="form-group">
+        <label>Calculate By</label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="calculationType"
+          (change)="onTypeChange()">
+
+          <option value="vori">Vori</option>
+          <option value="gram">Gram</option>
+
+        </select>
+      </div>
+
+      <!-- Vori Form -->
+      <div *ngIf="calculationType === 'vori'" class="calculation-form">
+
+        <div class="form-group">
+          <label>Vori</label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="vori"
+            (input)="calculate()"
+            placeholder="Enter Vori">
+        </div>
+
+        <div class="form-group">
+          <label>Price Per Vori</label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="pricePerVori"
+            (input)="calculate()"
+            placeholder="Enter price">
+        </div>
+
+      </div>
+
+      <!-- Gram Form -->
+      <div *ngIf="calculationType === 'gram'" class="calculation-form">
+
+        <div class="form-group">
+          <label>Gram</label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="gram"
+            (input)="calculate()"
+            placeholder="Enter Gram">
+        </div>
+
+        <div class="form-group">
+          <label>Price Per Gram</label>
+
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="pricePerGram"
+            (input)="calculate()"
+            placeholder="Enter price">
+        </div>
+
+      </div>
+
+      <!-- Result -->
+      <div class="result-card">
+
+        <span>Total Jewellery Price</span>
+
+        <strong>
+          ৳ {{ totalPrice | number:'1.2-2' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

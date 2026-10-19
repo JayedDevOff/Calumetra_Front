@@ -1,0 +1,293 @@
+<!-- percentage.html -->
+
+<div class="percentage-page">
+  <section class="percentage-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>%</span>
+        Smart Calculator
+      </div>
+
+      <h1>Percentage Calculator</h1>
+
+      <p>
+        Calculate percentages quickly and accurately with our simple, responsive percentage
+        calculator.
+      </p>
+
+      <div class="hero-points">
+        <span>✓ Easy to use</span>
+        <span>✓ Instant calculation</span>
+        <span>✓ 100% free</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="calculator-wrapper">
+    <section class="percentage-card">
+      <div class="card-header">
+        <div class="header-icon">%</div>
+
+        <div class="header-text">
+          <h2>Percentage Calculator</h2>
+          <p>Calculate percentage values, percentages of amounts and percentage changes.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="percentageForm" (ngSubmit)="calculatePercentage()">
+        <div class="calculation-grid">
+          <div class="calculation-box">
+            <div class="box-number">01</div>
+
+            <div class="box-content">
+              <h3>What is X% of Y?</h3>
+
+              <p class="box-description">Find a percentage of a specific number.</p>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="percentage">Percentage</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="percentage"
+                      type="number"
+                      formControlName="percentage"
+                      placeholder="10"
+                      [class.input-error]="isInvalid('percentage')"
+                    />
+                    <span>%</span>
+                  </div>
+
+                  <small *ngIf="isInvalid('percentage')"> Please enter a valid percentage. </small>
+                </div>
+
+                <div class="input-group">
+                  <label for="value">Value</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="value"
+                      type="number"
+                      formControlName="value"
+                      placeholder="200"
+                      [class.input-error]="isInvalid('value')"
+                    />
+                  </div>
+
+                  <small *ngIf="isInvalid('value')"> Please enter a valid value. </small>
+                </div>
+              </div>
+
+              <div class="answer-box">
+                <div>
+                  <span>Answer</span>
+                  <small
+                    >{{ firstPercentageLabel }} of
+                    {{ percentageForm.get('value')?.value || 0 }}</small
+                  >
+                </div>
+
+                <strong>
+                  {{ resultOne | number: '1.0-2' }}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="calculation-box">
+            <div class="box-number">02</div>
+
+            <div class="box-content">
+              <h3>What percentage is X of Y?</h3>
+
+              <p class="box-description">Find what percentage one number represents of another.</p>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="part">Part</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="part"
+                      type="number"
+                      formControlName="part"
+                      placeholder="50"
+                      [class.input-error]="isInvalid('part')"
+                    />
+                  </div>
+
+                  <small *ngIf="isInvalid('part')"> Please enter a valid number. </small>
+                </div>
+
+                <div class="input-group">
+                  <label for="whole">Whole</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="whole"
+                      type="number"
+                      formControlName="whole"
+                      placeholder="200"
+                      [class.input-error]="isInvalid('whole')"
+                    />
+                  </div>
+
+                  <small *ngIf="isInvalid('whole')"> Please enter a valid whole value. </small>
+                </div>
+              </div>
+
+              <div class="answer-box">
+                <div>
+                  <span>Percentage</span>
+                  <small
+                    >{{ percentageForm.get('part')?.value || 0 }} out of
+                    {{ percentageForm.get('whole')?.value || 0 }}</small
+                  >
+                </div>
+
+                <strong> {{ resultTwo | number: '1.0-2' }}% </strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="calculation-box full-width">
+            <div class="box-number">03</div>
+
+            <div class="box-content">
+              <h3>Percentage Change</h3>
+
+              <p class="box-description">
+                Calculate the percentage increase or decrease between two values.
+              </p>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="oldValue">Original Value</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="oldValue"
+                      type="number"
+                      formControlName="oldValue"
+                      placeholder="100"
+                      [class.input-error]="isInvalid('oldValue')"
+                    />
+                  </div>
+
+                  <small *ngIf="isInvalid('oldValue')">
+                    Please enter a valid original value.
+                  </small>
+                </div>
+
+                <div class="change-arrow">→</div>
+
+                <div class="input-group">
+                  <label for="newValue">New Value</label>
+
+                  <div class="input-wrapper">
+                    <input
+                      id="newValue"
+                      type="number"
+                      formControlName="newValue"
+                      placeholder="150"
+                      [class.input-error]="isInvalid('newValue')"
+                    />
+                  </div>
+
+                  <small *ngIf="isInvalid('newValue')"> Please enter a valid new value. </small>
+                </div>
+              </div>
+
+              <div class="answer-box change-answer">
+                <div>
+                  <span>{{ changeLabel }}</span>
+                  <small>Percentage difference</small>
+                </div>
+
+                <strong [class.positive]="resultThree > 0" [class.negative]="resultThree < 0">
+                  {{ resultThree | number: '1.0-2' }}%
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="calculate-btn">
+          Calculate Percentage
+          <span class="button-arrow">→</span>
+        </button>
+      </form>
+    </section>
+
+    <section class="result-card" *ngIf="calculated">
+      <div class="result-header">
+        <div>
+          <span class="result-label">CALCULATION RESULT</span>
+          <h2>Your Results</h2>
+          <p>Here are the calculated percentage values.</p>
+        </div>
+
+        <div class="result-icon">✓</div>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-stat">
+          <span class="stat-label">Percentage of Value</span>
+          <strong>
+            {{ resultOne | number: '1.0-2' }}
+          </strong>
+          <small> {{ firstPercentageLabel }} of {{ percentageForm.get('value')?.value }} </small>
+        </div>
+
+        <div class="result-stat">
+          <span class="stat-label">Percentage</span>
+          <strong> {{ resultTwo | number: '1.0-2' }}% </strong>
+          <small>
+            {{ percentageForm.get('part')?.value }} of {{ percentageForm.get('whole')?.value }}
+          </small>
+        </div>
+
+        <div class="result-stat">
+          <span class="stat-label">{{ changeLabel }}</span>
+          <strong [class.positive]="resultThree > 0" [class.negative]="resultThree < 0">
+            {{ resultThree | number: '1.0-2' }}%
+          </strong>
+          <small>
+            From {{ percentageForm.get('oldValue')?.value }} to
+            {{ percentageForm.get('newValue')?.value }}
+          </small>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <div class="formula-icon">%</div>
+
+        <div>
+          <h3>Percentage Formula</h3>
+          <p>Percentage = (Part ÷ Whole) × 100</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-card">
+      <div class="info-icon">i</div>
+
+      <div>
+        <h3>How to Calculate a Percentage</h3>
+
+        <p>
+          A percentage represents a number as a fraction of 100. To calculate a percentage, divide
+          the part by the whole and multiply the result by 100.
+        </p>
+
+        <p>For example, if you have 50 out of 200: (50 ÷ 200) × 100 = 25%.</p>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      <strong>Note:</strong>
+      This calculator provides mathematical calculations for general informational purposes.
+    </div>
+  </main>
+</div>

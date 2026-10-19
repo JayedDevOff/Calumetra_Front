@@ -1,0 +1,1090 @@
+:host {
+  display: block;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: #241b1b;
+}
+
+.mortgage-page {
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 5%, rgba(233, 59, 54, 0.08), transparent 30%),
+    radial-gradient(circle at 90% 10%, rgba(233, 59, 54, 0.06), transparent 28%), #fbfaf9;
+  padding-bottom: 70px;
+}
+
+.mortgage-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 20px 155px;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.12), transparent 25%),
+    radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.08), transparent 28%),
+    linear-gradient(135deg, #c92e2b 0%, #e93b36 48%, #f0524d 100%);
+  color: #ffffff;
+  border-radius: 0 0 42px 42px;
+}
+
+.mortgage-hero::before {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  right: -100px;
+  top: -150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mortgage-hero::after {
+  content: '';
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  left: -120px;
+  bottom: -160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.11);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 62px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.hero-content p {
+  max-width: 680px;
+  margin: 22px auto 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-points {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: 28px;
+}
+
+.hero-points span {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.calculator-wrapper {
+  position: relative;
+  z-index: 5;
+  max-width: 1100px;
+  margin: -95px auto 0;
+  padding: 0 20px;
+}
+
+.calculator-card,
+.result-card {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(224, 218, 215, 0.9);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow:
+    0 25px 65px rgba(44, 31, 31, 0.09),
+    0 5px 18px rgba(44, 31, 31, 0.04);
+}
+
+.calculator-card {
+  padding: 36px;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.calculator-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 30px 70px rgba(44, 31, 31, 0.11),
+    0 8px 20px rgba(44, 31, 31, 0.05);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.section-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background: rgba(233, 59, 54, 0.09);
+  color: #e93b36;
+  font-size: 22px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  color: #8b8080;
+  font-size: 13px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.form-group {
+  min-width: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 9px;
+  color: #332828;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 54px;
+  box-sizing: border-box;
+  padding: 0 17px;
+  border: 1px solid #e4dddd;
+  border-radius: 14px;
+  outline: none;
+  background: #ffffff;
+  color: #241b1b;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.input-wrapper input:hover {
+  border-color: #d5caca;
+}
+
+.input-wrapper input:focus {
+  border-color: #e93b36;
+  background: #fffdfd;
+  box-shadow: 0 0 0 4px rgba(233, 59, 54, 0.09);
+}
+
+.input-wrapper input::placeholder {
+  color: #b2a8a8;
+  font-weight: 500;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 17px;
+  z-index: 2;
+  color: #8e8282;
+  font-size: 15px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 17px;
+  color: #8e8282;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.input-prefix + input {
+  padding-left: 35px;
+}
+
+.input-wrapper input:has(+ .input-suffix) {
+  padding-right: 65px;
+}
+
+.error {
+  display: block;
+  margin-top: 7px;
+  color: #d9363e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.loan-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+  padding: 16px;
+  border: 1px solid #eee8e6;
+  border-radius: 17px;
+  background: #faf8f7;
+}
+
+.summary-item {
+  min-width: 0;
+  padding: 6px 12px;
+  text-align: center;
+  border-right: 1px solid #e8e0de;
+}
+
+.summary-item:last-child {
+  border-right: 0;
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #968a8a;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.summary-item strong {
+  color: #2d2222;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.calculate-btn {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #d8322f, #e93b36);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  box-shadow: 0 12px 25px rgba(233, 59, 54, 0.2);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.calculate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 17px 32px rgba(233, 59, 54, 0.27);
+}
+
+.calculate-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.calculate-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.btn-arrow {
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.calculate-btn:hover:not(:disabled) .btn-arrow {
+  transform: translateX(4px);
+}
+
+.result-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: 24px;
+  margin-top: 28px;
+  align-items: stretch;
+}
+
+.result-layout .result-card {
+  height: 100%;
+  margin-top: 0;
+  box-sizing: border-box;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.result-layout .result-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 30px 70px rgba(44, 31, 31, 0.11),
+    0 8px 20px rgba(44, 31, 31, 0.05);
+}
+
+.result-main-card {
+  display: flex;
+  flex-direction: column;
+  padding: 34px;
+}
+
+.result-breakdown-card {
+  display: flex;
+  align-items: center;
+  padding: 34px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.result-main {
+  min-width: 0;
+}
+
+.result-label {
+  display: block;
+  margin-bottom: 9px;
+  color: #918484;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.result-main h2 {
+  margin: 0;
+  color: #251b1b;
+  font-size: clamp(38px, 4vw, 52px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.result-main p {
+  margin: 12px 0 0;
+  color: #918585;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.payment-circle {
+  width: 106px;
+  height: 106px;
+  flex: 0 0 106px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: conic-gradient(
+    #e93b36 0deg,
+    #e93b36 calc(var(--principal, 70) * 3.6deg),
+    #f0e7e5 calc(var(--principal, 70) * 3.6deg),
+    #f0e7e5 360deg
+  );
+  position: relative;
+}
+
+.payment-circle::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.circle-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.circle-inner strong {
+  color: #2c2020;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.circle-inner span {
+  margin-top: 2px;
+  color: #9a8d8d;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.result-main-card .result-stats {
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #eee8e6;
+  border-radius: 16px;
+  background: #fbf9f8;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(233, 59, 54, 0.18);
+  background: #fffafa;
+}
+
+.stat-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(233, 59, 54, 0.09);
+  color: #e93b36;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 3px;
+  color: #9b9090;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.stat-card strong {
+  display: block;
+  color: #312525;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.breakdown-card {
+  width: 100%;
+}
+
+.breakdown-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.breakdown-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #e93b36;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.breakdown-header h3 {
+  margin: 0;
+  color: #2e2323;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+.breakdown-period {
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: #faf0ef;
+  color: #c8322f;
+  font-size: 10px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.breakdown-visual {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.breakdown-bar {
+  flex: 0 0 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-chart {
+  width: 145px;
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: conic-gradient(
+    #e93b36 0deg,
+    #e93b36 calc(var(--principal, 70) * 3.6deg),
+    #f0e7e5 calc(var(--principal, 70) * 3.6deg),
+    #f0e7e5 360deg
+  );
+  position: relative;
+}
+
+.donut-chart::before {
+  content: '';
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.donut-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center strong {
+  color: #2c2020;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.donut-center span {
+  margin-top: 2px;
+  color: #968989;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.breakdown-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eee8e6;
+}
+
+.breakdown-row:first-child {
+  padding-top: 0;
+}
+
+.breakdown-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #514545;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.breakdown-row strong {
+  color: #2d2222;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.principal {
+  background: #e93b36;
+}
+
+.dot.interest {
+  background: #e5d9d6;
+}
+
+.breakdown-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: #faf8f7;
+}
+
+.breakdown-total span {
+  color: #857878;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.breakdown-total strong {
+  color: #2b2020;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.result-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 24px;
+  padding: 21px 23px;
+  border: 1px solid #eee7e5;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(44, 31, 31, 0.04);
+}
+
+.info-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(233, 59, 54, 0.09);
+  color: #e93b36;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.result-info h3 {
+  margin: 0 0 5px;
+  color: #302525;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.result-info p {
+  margin: 0;
+  color: #837777;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.result-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.footer-item {
+  padding: 15px 18px;
+  border: 1px solid #eee8e6;
+  border-radius: 15px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.footer-item span {
+  display: block;
+  margin-bottom: 5px;
+  color: #978b8b;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.footer-item strong {
+  color: #312525;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.disclaimer {
+  max-width: 850px;
+  margin: 24px auto 0;
+  color: #9a9090;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .calculator-card {
+    padding: 30px;
+  }
+
+  .result-main-card,
+  .result-breakdown-card {
+    padding: 28px;
+  }
+
+  .result-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .result-breakdown-card {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  .mortgage-hero {
+    padding: 60px 18px 140px;
+    border-radius: 0 0 30px 30px;
+  }
+
+  .hero-content h1 {
+    letter-spacing: -1.3px;
+  }
+
+  .hero-content p {
+    font-size: 14px;
+  }
+
+  .hero-points {
+    gap: 8px 15px;
+  }
+
+  .calculator-wrapper {
+    margin-top: -85px;
+    padding: 0 15px;
+  }
+
+  .calculator-card {
+    padding: 24px;
+    border-radius: 22px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .loan-summary {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .summary-item {
+    border-right: 0;
+    border-bottom: 1px solid #e8e0de;
+    padding: 13px 10px;
+  }
+
+  .summary-item:last-child {
+    border-bottom: 0;
+  }
+
+  .result-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  .result-layout .result-card {
+    margin-top: 0;
+  }
+
+  .result-main-card,
+  .result-breakdown-card {
+    padding: 24px;
+    border-radius: 22px;
+  }
+
+  .result-header {
+    align-items: flex-start;
+  }
+
+  .payment-circle {
+    width: 90px;
+    height: 90px;
+    flex-basis: 90px;
+  }
+
+  .result-main h2 {
+    font-size: 40px;
+  }
+
+  .result-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .result-main-card .result-stats {
+    padding-top: 24px;
+  }
+
+  .breakdown-visual {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .breakdown-bar {
+    flex-basis: auto;
+  }
+
+  .donut-chart {
+    margin: 0 auto;
+  }
+
+  .result-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .mortgage-page {
+    padding-bottom: 45px;
+  }
+
+  .mortgage-hero {
+    padding: 50px 16px 125px;
+  }
+
+  .hero-badge {
+    font-size: 10px;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+  }
+
+  .hero-content p {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .hero-points {
+    margin-top: 22px;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .hero-points span {
+    font-size: 11px;
+  }
+
+  .calculator-wrapper {
+    margin-top: -75px;
+    padding: 0 12px;
+  }
+
+  .calculator-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .section-heading {
+    margin-bottom: 23px;
+  }
+
+  .section-icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    border-radius: 12px;
+  }
+
+  .section-heading h2 {
+    font-size: 19px;
+  }
+
+  .section-heading p {
+    font-size: 11px;
+  }
+
+  .input-wrapper input {
+    height: 50px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  .calculate-btn {
+    height: 52px;
+    border-radius: 13px;
+  }
+
+  .result-main-card,
+  .result-breakdown-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .result-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .payment-circle {
+    align-self: center;
+  }
+
+  .result-main {
+    width: 100%;
+    text-align: center;
+  }
+
+  .result-main h2 {
+    font-size: 38px;
+  }
+
+  .result-main p {
+    font-size: 11px;
+  }
+
+  .result-stats {
+    margin-top: 24px;
+  }
+
+  .stat-card {
+    padding: 13px;
+  }
+
+  .breakdown-header {
+    flex-direction: column;
+    margin-bottom: 22px;
+  }
+
+  .breakdown-header h3 {
+    font-size: 17px;
+  }
+
+  .breakdown-period {
+    align-self: flex-start;
+  }
+
+  .donut-chart {
+    width: 135px;
+    height: 135px;
+  }
+
+  .result-info {
+    padding: 18px;
+    border-radius: 17px;
+  }
+
+  .result-info p {
+    font-size: 11px;
+  }
+
+  .footer-item {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .calculator-card,
+  .result-main-card,
+  .result-breakdown-card {
+    padding: 17px;
+  }
+
+  .hero-content h1 {
+    font-size: 32px;
+  }
+
+  .result-main h2 {
+    font-size: 34px;
+  }
+
+  .donut-chart {
+    width: 125px;
+    height: 125px;
+  }
+
+  .donut-center strong {
+    font-size: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calculator-card,
+  .result-layout .result-card,
+  .stat-card,
+  .calculate-btn,
+  .btn-arrow {
+    transition: none;
+  }
+}

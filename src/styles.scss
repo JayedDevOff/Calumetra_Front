@@ -1,0 +1,31 @@
+:root {
+--font-orbitron: 'Orbitron', sans-serif;
+--font-inter: 'Inter', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+box-sizing: border-box;
+}
+
+html,
+body {
+margin: 0;
+padding: 0;
+width: 100%;
+max-width: 100%;
+overflow-x: hidden;
+}
+
+body {
+font-family: var(--font-inter);
+}
+
+.font-orbitron {
+font-family: var(--font-orbitron);
+}
+
+.font-inter {
+font-family: var(--font-inter);
+}

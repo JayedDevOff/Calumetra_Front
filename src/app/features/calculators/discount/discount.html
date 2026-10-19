@@ -1,0 +1,436 @@
+
+<div class="discount-page">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <span class="badge">Discount Calculator</span>
+
+      <h1>Discount Calculator</h1>
+
+      <p>
+        Calculate your final sale price after discount
+        and optional VAT.
+      </p>
+    </div>
+  </section>
+
+
+  <main class="container">
+
+    <!-- Calculator -->
+    <section class="card calculator">
+
+      <div class="heading">
+        <span class="icon">🏷️</span>
+
+        <div>
+          <h2>Discount Details</h2>
+          <p>Enter your price and discount information</p>
+        </div>
+      </div>
+
+
+      <form
+        [formGroup]="discountForm"
+        (ngSubmit)="calculateDiscount()"
+      >
+
+        <div class="form-grid">
+
+          <!-- Original Price -->
+          <div class="field">
+            <label>Original Price</label>
+
+            <div class="input">
+              <span>৳</span>
+
+              <input
+                type="number"
+                formControlName="originalPrice"
+                placeholder="2,000"
+              />
+            </div>
+
+            <small *ngIf="isInvalid('originalPrice')">
+              Enter a valid original price.
+            </small>
+          </div>
+
+
+          <!-- Discount -->
+          <div class="field">
+            <label>Discount</label>
+
+            <div class="input">
+              <input
+                type="number"
+                formControlName="discountRate"
+                placeholder="20"
+                step="0.01"
+              />
+
+              <span>%</span>
+            </div>
+
+            <small *ngIf="isInvalid('discountRate')">
+              Enter a valid discount rate.
+            </small>
+          </div>
+
+        </div>
+
+
+        <!-- VAT -->
+        <div class="vat-box">
+
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              formControlName="addVat"
+            />
+
+            <span>
+              <strong>Add VAT</strong>
+              <small>Include VAT in the final price</small>
+            </span>
+          </label>
+
+
+          <div
+            class="vat-input"
+            *ngIf="discountForm.get('addVat')?.value"
+          >
+
+            <label>VAT Rate</label>
+
+            <div class="input">
+              <input
+                type="number"
+                formControlName="vatRate"
+                placeholder="5"
+                step="0.01"
+              />
+
+              <span>%</span>
+            </div>
+
+            <small *ngIf="isInvalid('vatRate')">
+              Enter a valid VAT rate.
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- Quick Summary -->
+        <div class="summary">
+
+          <div>
+            <span>Original</span>
+
+            <strong>
+              ৳{{ discountForm.get('originalPrice')?.value | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Discount</span>
+
+            <strong>
+              {{ discountForm.get('discountRate')?.value || 0 }}%
+            </strong>
+          </div>
+
+          <div>
+            <span>VAT</span>
+
+            <strong>
+              {{
+                discountForm.get('addVat')?.value
+                  ? (discountForm.get('vatRate')?.value || 0) + '%'
+                  : 'Off'
+              }}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          [disabled]="discountForm.invalid"
+        >
+          Calculate
+          <span>→</span>
+        </button>
+
+      </form>
+
+    </section>
+
+
+    <!-- Results -->
+    <section
+      class="results"
+      *ngIf="calculated"
+    >
+
+      <!-- Main Result -->
+      <div class="card result-card">
+
+        <div class="result-top">
+
+          <div>
+            <span class="label">
+              Final Sale Price
+            </span>
+
+            <h2>
+              ৳{{ finalPrice | number:'1.2-2' }}
+            </h2>
+
+            <p>
+              Your final price after discount
+              <span *ngIf="addVat">and VAT</span>.
+            </p>
+          </div>
+
+
+          <div
+            class="discount-circle"
+            [style.--discount]="discountRate + '%'"
+          >
+            <div>
+              <strong>
+                {{ discountRate | number:'1.0-2' }}%
+              </strong>
+
+              <span>OFF</span>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- Stats -->
+        <div class="stats">
+
+          <div>
+            <span>Discount Amount</span>
+
+            <strong>
+              ৳{{ discountAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>After Discount</span>
+
+            <strong>
+              ৳{{ priceAfterDiscount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>VAT</span>
+
+            <strong>
+              ৳{{ vatAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Breakdown -->
+      <div class="card breakdown">
+
+        <div class="breakdown-head">
+
+          <div>
+            <span>Price Breakdown</span>
+            <h3>Final Price Details</h3>
+          </div>
+
+          <b>
+            {{ discountRate | number:'1.0-2' }}% OFF
+          </b>
+
+        </div>
+
+
+        <div class="breakdown-content">
+
+          <div
+            class="donut"
+            [style.--discount]="discountRate + '%'"
+          >
+            <div>
+              <strong>
+                {{ discountRate | number:'1.0-2' }}%
+              </strong>
+
+              <span>Saved</span>
+            </div>
+          </div>
+
+
+          <div class="breakdown-list">
+
+            <div>
+              <span>
+                <i class="dot original"></i>
+                Original Price
+              </span>
+
+              <strong>
+                ৳{{ originalPrice | number:'1.2-2' }}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>
+                <i class="dot discount"></i>
+                Discount
+              </span>
+
+              <strong>
+                -৳{{ discountAmount | number:'1.2-2' }}
+              </strong>
+            </div>
+
+
+            <div>
+              <span>
+                <i class="dot after-discount"></i>
+                Price After Discount
+              </span>
+
+              <strong>
+                ৳{{ priceAfterDiscount | number:'1.2-2' }}
+              </strong>
+            </div>
+
+
+            <div *ngIf="addVat">
+              <span>
+                <i class="dot vat"></i>
+                VAT ({{ vatRate }}%)
+              </span>
+
+              <strong>
+                +৳{{ vatAmount | number:'1.2-2' }}
+              </strong>
+            </div>
+
+
+            <div class="total">
+
+              <span>Final Price</span>
+
+              <strong>
+                ৳{{ finalPrice | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Saving Highlight -->
+    <div
+      class="saving-highlight"
+      *ngIf="calculated"
+    >
+
+      <div class="save-icon">✓</div>
+
+      <div>
+        <strong>
+          You Save ৳{{ discountAmount | number:'1.2-2' }}
+        </strong>
+
+        <p>
+          You saved {{ discountRate | number:'1.0-2' }}%
+          from the original price.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Information -->
+    <div
+      class="info"
+      *ngIf="calculated"
+    >
+
+      <div>i</div>
+
+      <p>
+        <strong>How This Calculation Works</strong>
+        <br />
+
+        The discount is calculated from the original price.
+        VAT is then added to the discounted price when enabled.
+      </p>
+
+    </div>
+
+
+    <!-- Footer Stats -->
+    <div
+      class="footer-stats"
+      *ngIf="calculated"
+    >
+
+      <div>
+        <span>Original Price</span>
+
+        <strong>
+          ৳{{ originalPrice | number:'1.2-2' }}
+        </strong>
+      </div>
+
+
+      <div>
+        <span>You Save</span>
+
+        <strong>
+          ৳{{ discountAmount | number:'1.2-2' }}
+        </strong>
+      </div>
+
+
+      <div>
+        <span>Final Price</span>
+
+        <strong>
+          ৳{{ finalPrice | number:'1.2-2' }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <p class="disclaimer">
+      This calculator provides estimates for informational purposes only.
+      Actual prices may vary depending on store policies, taxes,
+      fees and other charges.
+    </p>
+
+  </main>
+
+</div>
+

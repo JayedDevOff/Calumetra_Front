@@ -1,0 +1,201 @@
+<div class="scientific-page">
+  <div class="calculator-header">
+    <div class="header-badge">
+      <span class="badge-dot"></span>
+      Advanced Math Calculator
+    </div>
+
+    <h1>SCIENTIFIC CALCULATOR</h1>
+
+    <p>
+      PERFORM ADVANCED MATHEMATICAL CALCULATIONS WITH TRIGONOMETRY, LOGARITHMS, POWERS, ROOTS AND
+      MORE.
+    </p>
+  </div>
+
+  <div class="calculator-shell">
+    <section class="calculator-card">
+      <div class="calculator-topbar">
+        <div class="brand">
+          <div class="brand-icon">∑</div>
+
+          <div>
+            <strong>Scientific</strong>
+            <span>Advanced Calculator</span>
+          </div>
+        </div>
+
+        <button class="mode-button" type="button" (click)="toggleMode()">
+          {{ mode }}
+        </button>
+      </div>
+
+      <div class="display-panel">
+        <div class="expression-display">
+          {{ expression || 'Ready' }}
+        </div>
+
+        <div class="main-display" [class.error]="display === 'Error'">
+          {{ display }}
+        </div>
+
+        <div class="display-footer">
+          <span *ngIf="memory !== 0">M</span>
+          <span>{{ mode }}</span>
+        </div>
+      </div>
+
+      <div class="memory-row">
+        <button type="button" (click)="memoryClear()">MC</button>
+        <button type="button" (click)="memoryRecall()">MR</button>
+        <button type="button" (click)="memoryAdd()">M+</button>
+        <button type="button" (click)="memorySubtract()">M−</button>
+      </div>
+
+      <div class="scientific-grid">
+        <button class="function-button" type="button" (click)="scientificFunction('sin')">
+          sin
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('cos')">
+          cos
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('tan')">
+          tan
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('log')">
+          log
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('ln')">ln</button>
+
+        <button class="function-button" type="button" (click)="scientificFunction('asin')">
+          sin⁻¹
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('acos')">
+          cos⁻¹
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('atan')">
+          tan⁻¹
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('sqrt')">
+          √x
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('square')">
+          x²
+        </button>
+
+        <button class="function-button" type="button" (click)="scientificFunction('cube')">
+          x³
+        </button>
+        <button class="function-button" type="button" (click)="inputOperator('^')">xʸ</button>
+        <button class="function-button" type="button" (click)="scientificFunction('factorial')">
+          x!
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('reciprocal')">
+          1/x
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('abs')">
+          |x|
+        </button>
+
+        <button class="function-button" type="button" (click)="scientificFunction('exp')">
+          eˣ
+        </button>
+        <button class="function-button" type="button" (click)="scientificFunction('tenPower')">
+          10ˣ
+        </button>
+        <button class="function-button" type="button" (click)="insertConstant('pi')">π</button>
+        <button class="function-button" type="button" (click)="insertConstant('e')">e</button>
+        <button class="function-button" type="button" (click)="toggleSign()">±</button>
+      </div>
+
+      <div class="keypad">
+        <button class="action-button" type="button" (click)="clear()">AC</button>
+        <button class="action-button" type="button" (click)="deleteLast()">DEL</button>
+        <button class="operator-button" type="button" (click)="inputParenthesis('(')">(</button>
+        <button class="operator-button" type="button" (click)="inputParenthesis(')')">)</button>
+        <button class="operator-button" type="button" (click)="percentage()">%</button>
+
+        <button type="button" (click)="inputDigit('7')">7</button>
+        <button type="button" (click)="inputDigit('8')">8</button>
+        <button type="button" (click)="inputDigit('9')">9</button>
+        <button class="operator-button" type="button" (click)="inputOperator('÷')">÷</button>
+        <button class="operator-button" type="button" (click)="inputOperator('^')">^</button>
+
+        <button type="button" (click)="inputDigit('4')">4</button>
+        <button type="button" (click)="inputDigit('5')">5</button>
+        <button type="button" (click)="inputDigit('6')">6</button>
+        <button class="operator-button" type="button" (click)="inputOperator('×')">×</button>
+        <button class="operator-button" type="button" (click)="scientificFunction('sqrt')">
+          √
+        </button>
+
+        <button type="button" (click)="inputDigit('1')">1</button>
+        <button type="button" (click)="inputDigit('2')">2</button>
+        <button type="button" (click)="inputDigit('3')">3</button>
+        <button class="operator-button" type="button" (click)="inputOperator('-')">−</button>
+        <button class="operator-button" type="button" (click)="scientificFunction('factorial')">
+          !
+        </button>
+
+        <button type="button" class="zero-button" (click)="inputDigit('0')">0</button>
+        <button type="button" (click)="inputDecimal()">.</button>
+        <button class="operator-button" type="button" (click)="inputOperator('+')">+</button>
+        <button class="equals-button" type="button" (click)="calculate()">=</button>
+      </div>
+    </section>
+
+    <aside class="history-card">
+      <div class="history-header">
+        <div>
+          <span class="eyebrow">CALCULATION HISTORY</span>
+          <h2>Recent Results</h2>
+        </div>
+
+        <button *ngIf="history.length" type="button" (click)="clearHistory()">Clear</button>
+      </div>
+
+      <div class="history-list" *ngIf="history.length; else emptyHistory">
+        <button
+          class="history-item"
+          type="button"
+          *ngFor="let item of history"
+          (click)="useHistory(item)"
+        >
+          <span class="history-expression">
+            {{ item.expression }}
+          </span>
+
+          <strong> = {{ item.result }} </strong>
+        </button>
+      </div>
+
+      <ng-template #emptyHistory>
+        <div class="empty-history">
+          <div class="empty-icon">⌁</div>
+          <h3>No calculations yet</h3>
+          <p>Your recent calculations will appear here.</p>
+        </div>
+      </ng-template>
+    </aside>
+  </div>
+
+  <section class="feature-grid">
+    <article class="feature-card">
+      <span class="feature-number">01</span>
+      <h3>Scientific Functions</h3>
+      <p>Calculate trigonometric functions, logarithms, roots, powers, factorials and more.</p>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-number">02</span>
+      <h3>DEG & RAD Modes</h3>
+      <p>Switch between degrees and radians when working with trigonometric calculations.</p>
+    </article>
+
+    <article class="feature-card">
+      <span class="feature-number">03</span>
+      <h3>Calculation History</h3>
+      <p>Quickly review and reuse your recent calculations without entering everything again.</p>
+    </article>
+  </section>
+</div>

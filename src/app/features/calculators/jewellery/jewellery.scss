@@ -1,0 +1,132 @@
+.calculator-wrapper {
+  min-height: 80vh;
+  padding: 50px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+ // background: #f7f8fa;
+}
+
+.calculator-card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, .08);
+}
+
+.card-header {
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #fff7f7, #fff);
+  border-bottom: 1px solid #eee;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #e53232, #c92727);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 0 7px 18px rgba(229, 50, 50, .2);
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #222;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.card-header p {
+  margin: 4px 0 0;
+  color: #888;
+  font-size: 13px;
+}
+
+.calculator-body {
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  height: 45px;
+  padding: 0 13px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.form-control:focus {
+  border-color: #e53232;
+  box-shadow: 0 0 0 3px rgba(229, 50, 50, .08);
+}
+
+.calculation-form {
+  padding-top: 5px;
+}
+
+.result-card {
+  margin-top: 25px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #fff4f4, #fffafa);
+  border: 1px solid #ffdede;
+  border-radius: 12px;
+}
+
+.result-card span {
+  color: #666;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.result-card strong {
+  color: #d92b2b;
+  font-size: 21px;
+}
+
+@media (max-width: 576px) {
+
+  .calculator-wrapper {
+    padding: 25px 15px;
+  }
+
+  .card-header,
+  .calculator-body {
+    padding: 20px;
+  }
+
+  .result-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+}

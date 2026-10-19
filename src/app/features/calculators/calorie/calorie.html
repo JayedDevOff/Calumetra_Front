@@ -1,0 +1,303 @@
+<div class="calorie-page">
+  <div class="calorie-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>🔥</span>
+        Smart Calorie Calculator
+      </div>
+
+      <h1>Calorie Calculator</h1>
+
+      <p>
+        Discover your daily calorie needs based on your body, lifestyle,
+        and personal weight goal.
+      </p>
+
+      <div class="hero-points">
+        <span>✓ BMR</span>
+        <span>✓ TDEE</span>
+        <span>✓ Weight Goals</span>
+        <span>✓ Personalized Results</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="calculator-wrapper">
+    <div class="calculator-card">
+
+      <div class="section-heading">
+        <div class="section-icon">👤</div>
+        <div>
+          <h2>Your Information</h2>
+          <p>Enter your details to calculate your daily calorie needs.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="calorieForm" (ngSubmit)="calculateCalories()">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Age</label>
+            <div class="input-wrapper">
+              <input
+                type="number"
+                formControlName="age"
+                placeholder="Enter your age"
+                min="1"
+                max="120"
+              />
+              <span>years</span>
+            </div>
+            <small *ngIf="isInvalid('age')">
+              Please enter a valid age between 1 and 120.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="gender-options">
+
+              <button
+                type="button"
+                [class.active]="calorieForm.value.gender === 'male'"
+                (click)="setGender('male')">
+                <span>♂</span>
+                <strong>Male</strong>
+              </button>
+
+              <button
+                type="button"
+                [class.active]="calorieForm.value.gender === 'female'"
+                (click)="setGender('female')">
+                <span>♀</span>
+                <strong>Female</strong>
+              </button>
+
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Height</label>
+            <div class="input-wrapper">
+              <input
+                type="number"
+                formControlName="height"
+                placeholder="Enter height"
+                min="50"
+                max="250"
+              />
+              <span>cm</span>
+            </div>
+            <small *ngIf="isInvalid('height')">
+              Please enter a valid height.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Weight</label>
+            <div class="input-wrapper">
+              <input
+                type="number"
+                formControlName="weight"
+                placeholder="Enter weight"
+                min="20"
+                max="300"
+              />
+              <span>kg</span>
+            </div>
+            <small *ngIf="isInvalid('weight')">
+              Please enter a valid weight.
+            </small>
+          </div>
+
+        </div>
+
+        <div class="form-section">
+          <div class="field-title">
+            <span>🏃</span>
+            <div>
+              <strong>Activity Level</strong>
+              <p>How active are you on a typical day?</p>
+            </div>
+          </div>
+
+          <div class="activity-grid">
+
+            <button
+              type="button"
+              *ngFor="let activity of activities"
+              class="activity-card"
+              [class.active]="calorieForm.value.activity === activity.value"
+              (click)="setActivity(activity.value)">
+
+              <span class="activity-icon">{{ activity.icon }}</span>
+
+              <span class="activity-info">
+                <strong>{{ activity.name }}</strong>
+                <small>{{ activity.description }}</small>
+              </span>
+
+              <span class="activity-radio">
+                <span></span>
+              </span>
+
+            </button>
+
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="field-title">
+            <span>🎯</span>
+            <div>
+              <strong>Your Goal</strong>
+              <p>Select what you want to achieve.</p>
+            </div>
+          </div>
+
+          <div class="goal-grid">
+
+            <button
+              type="button"
+              class="goal-card lose"
+              [class.active]="calorieForm.value.goal === 'lose'"
+              (click)="setGoal('lose')">
+              <span class="goal-icon">📉</span>
+              <strong>Lose Weight</strong>
+              <small>Reduce body weight</small>
+            </button>
+
+            <button
+              type="button"
+              class="goal-card maintain"
+              [class.active]="calorieForm.value.goal === 'maintain'"
+              (click)="setGoal('maintain')">
+              <span class="goal-icon">⚖️</span>
+              <strong>Maintain Weight</strong>
+              <small>Stay at current weight</small>
+            </button>
+
+            <button
+              type="button"
+              class="goal-card gain"
+              [class.active]="calorieForm.value.goal === 'gain'"
+              (click)="setGoal('gain')">
+              <span class="goal-icon">📈</span>
+              <strong>Gain Weight</strong>
+              <small>Increase body weight</small>
+            </button>
+
+          </div>
+        </div>
+
+        <button class="calculate-button" type="submit">
+          <span>Calculate My Calories</span>
+          <span class="button-arrow">→</span>
+        </button>
+
+      </form>
+    </div>
+
+    <div class="result-card" *ngIf="calculated">
+
+      <div class="result-header">
+        <div>
+          <span class="result-label">YOUR DAILY CALORIE NEED</span>
+          <h2>{{ goalCalories | number:'1.0-0' }} <small>kcal/day</small></h2>
+          <p>{{ goalMessage }}</p>
+        </div>
+
+        <div class="calorie-circle">
+          <div class="circle-inner">
+            <span>🔥</span>
+            <strong>{{ goalCalories | number:'1.0-0' }}</strong>
+            <small>kcal</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-stats">
+
+        <div class="stat-card">
+          <span class="stat-icon">⚡</span>
+          <div>
+            <small>BMR</small>
+            <strong>{{ bmr | number:'1.0-0' }}</strong>
+            <span>kcal/day</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <div>
+            <small>Maintenance</small>
+            <strong>{{ tdee | number:'1.0-0' }}</strong>
+            <span>kcal/day</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-icon">🎯</span>
+          <div>
+            <small>Your Target</small>
+            <strong>{{ goalCalories | number:'1.0-0' }}</strong>
+            <span>kcal/day</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="calorie-scale">
+        <div class="scale-header">
+          <strong>Daily Calorie Guide</strong>
+          <span>{{ goalLabel }}</span>
+        </div>
+
+        <div class="scale-bar">
+          <div
+            class="scale-marker"
+            [style.left.%]="scalePosition">
+            <span>{{ goalCalories | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="scale-labels">
+          <span>Weight Loss</span>
+          <span>Maintenance</span>
+          <span>Weight Gain</span>
+        </div>
+      </div>
+
+      <div class="result-info">
+        <div class="info-icon">💡</div>
+        <div>
+          <strong>Your personalized estimate</strong>
+          <p>
+            Your estimated maintenance requirement is
+            {{ tdee | number:'1.0-0' }} calories per day.
+            Based on your selected goal, your recommended target is
+            {{ goalCalories | number:'1.0-0' }} calories per day.
+          </p>
+        </div>
+      </div>
+
+      <div class="result-footer">
+        <span>✓ Personalized calculation</span>
+        <span>✓ Based on your activity</span>
+        <span>✓ Easy to understand</span>
+      </div>
+
+    </div>
+
+    <div class="disclaimer">
+      <span>ⓘ</span>
+      <p>
+        This calculator provides an estimate for informational purposes only.
+        Individual calorie requirements may vary depending on metabolism,
+        body composition, health, and other factors.
+      </p>
+    </div>
+
+  </div>
+</div>

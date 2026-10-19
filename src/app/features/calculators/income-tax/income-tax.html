@@ -1,0 +1,1461 @@
+<div class="tax-page" [formGroup]="taxForm">
+
+  <!-- HERO -->
+  <section class="tax-hero">
+
+    <div class="hero-content">
+
+      <div class="hero-badge">
+        GLOBAL FINANCE CALCULATOR
+      </div>
+
+      <h1>
+        INCOME TAX CALCULATOR
+      </h1>
+
+      <p>
+        CALCULATE YOUR INCOME TAX, DEDUCTIONS AND TAKE-HOME PAY.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAIN CALCULATOR -->
+  <section class="calculator-wrapper">
+
+    <div class="calculator-grid">
+
+
+      <!-- INPUT PANEL -->
+      <div class="input-panel">
+
+        <div class="panel-heading">
+
+          <span class="step-number">
+            01
+          </span>
+
+          <div>
+            <h2>
+              TAX INFORMATION
+            </h2>
+
+            <p>
+              SELECT YOUR COUNTRY, TAX YEAR AND INCOME DETAILS.
+            </p>
+          </div>
+
+        </div>
+
+
+        <!-- COUNTRY -->
+        <div class="form-group">
+
+          <label for="country">
+            COUNTRY
+          </label>
+
+          <select
+            id="country"
+            formControlName="country"
+          >
+
+            <option
+              *ngFor="let country of countries"
+              [value]="country.code"
+            >
+              {{ country.name }}
+              <ng-container
+                *ngIf="country.status === 'unavailable'"
+              >
+                — DATA UNAVAILABLE
+              </ng-container>
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- TAX YEAR -->
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="taxYear">
+              TAX YEAR
+            </label>
+
+            <select
+              id="taxYear"
+              formControlName="taxYear"
+            >
+
+              <option
+                *ngFor="let year of selectedTaxYears"
+                [value]="year"
+              >
+                {{ year }}
+              </option>
+
+              <option
+                *ngIf="selectedTaxYears.length === 0"
+                value=""
+              >
+                NO TAX DATA
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="frequency">
+              INCOME FREQUENCY
+            </label>
+
+            <select
+              id="frequency"
+              formControlName="frequency"
+              (change)="onIncomeFrequencyChange()"
+            >
+
+              <option value="annual">
+                Annual
+              </option>
+
+              <option value="monthly">
+                Monthly
+              </option>
+
+              <option value="weekly">
+                Weekly
+              </option>
+
+              <option value="daily">
+                Daily
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- CURRENCY -->
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="taxCurrency">
+              TAX CALCULATION CURRENCY
+            </label>
+
+            <select
+              id="taxCurrency"
+              formControlName="taxCurrency"
+              (change)="onTaxCurrencyChange()"
+            >
+
+              <option
+                *ngFor="let currency of currencies"
+                [value]="currency.code"
+              >
+                {{ currency.code }} —
+                {{ currency.name }}
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="displayCurrency">
+              DISPLAY CURRENCY
+            </label>
+
+            <select
+              id="displayCurrency"
+              formControlName="displayCurrency"
+              (change)="onDisplayCurrencyChange()"
+            >
+
+              <option
+                *ngFor="let currency of currencies"
+                [value]="currency.code"
+              >
+                {{ currency.code }} —
+                {{ currency.name }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- INCOME -->
+        <div class="form-group">
+
+          <label for="income">
+            INCOME AMOUNT
+          </label>
+
+          <div class="input-with-code">
+
+            <span>
+              {{ currentTaxCurrency }}
+            </span>
+
+            <input
+              id="income"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="100000"
+              formControlName="income"
+              [class.invalid]="isInvalid('income')"
+            />
+
+          </div>
+
+          <small
+            class="error-text"
+            *ngIf="isInvalid('income')"
+          >
+            ENTER A VALID INCOME AMOUNT GREATER THAN ZERO.
+          </small>
+
+        </div>
+
+
+        <!-- FILING -->
+        <div class="form-group">
+
+          <label for="filingStatus">
+            FILING STATUS
+          </label>
+
+          <select
+            id="filingStatus"
+            formControlName="filingStatus"
+          >
+
+            <option
+              *ngFor="let status of selectedFilingStatuses"
+              [value]="status.code"
+            >
+              {{ status.name }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- REGION -->
+        <div
+          class="form-group"
+          *ngIf="selectedRegions.length > 0"
+        >
+
+          <label for="region">
+            REGION / STATE
+          </label>
+
+          <select
+            id="region"
+            formControlName="region"
+            [class.invalid]="isInvalid('region')"
+          >
+
+            <option value="">
+              SELECT REGION
+            </option>
+
+            <option
+              *ngFor="let region of selectedRegions"
+              [value]="region.code"
+              [disabled]="region.status === 'unavailable'"
+            >
+
+              {{ region.name }}
+
+              <ng-container
+                *ngIf="region.status === 'unavailable'"
+              >
+                — DATA UNAVAILABLE
+              </ng-container>
+
+            </option>
+
+          </select>
+
+          <small
+            class="error-text"
+            *ngIf="isInvalid('region')"
+          >
+            PLEASE SELECT A REGION.
+          </small>
+
+        </div>
+
+
+        <!-- PERSONAL PROFILE -->
+        <div class="section-divider">
+
+          <span>
+            PERSONAL PROFILE
+          </span>
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="age">
+              AGE
+            </label>
+
+            <input
+              id="age"
+              type="number"
+              min="0"
+              max="120"
+              formControlName="age"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="dependents">
+              DEPENDENTS
+            </label>
+
+            <input
+              id="dependents"
+              type="number"
+              min="0"
+              max="50"
+              formControlName="dependents"
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="checkbox-grid">
+
+          <label class="checkbox-item">
+
+            <input
+              type="checkbox"
+              formControlName="spouse"
+            />
+
+            <span>
+              SPOUSE
+            </span>
+
+          </label>
+
+
+          <label class="checkbox-item">
+
+            <input
+              type="checkbox"
+              formControlName="disability"
+            />
+
+            <span>
+              DISABILITY
+            </span>
+
+          </label>
+
+        </div>
+
+
+        <!-- DEDUCTIONS -->
+        <div class="section-divider">
+
+          <span>
+            DEDUCTIONS
+          </span>
+
+        </div>
+
+
+        <label class="checkbox-item deduction-toggle">
+
+          <input
+            type="checkbox"
+            formControlName="standardDeduction"
+          />
+
+          <span>
+            APPLY STANDARD DEDUCTION
+          </span>
+
+        </label>
+
+
+        <div class="form-group">
+
+          <label for="additionalDeduction">
+            ADDITIONAL DEDUCTION
+          </label>
+
+          <input
+            id="additionalDeduction"
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="additionalDeduction"
+          />
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="retirementContribution">
+              RETIREMENT CONTRIBUTION
+            </label>
+
+            <input
+              id="retirementContribution"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="retirementContribution"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="healthDeduction">
+              HEALTH DEDUCTION
+            </label>
+
+            <input
+              id="healthDeduction"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="healthDeduction"
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="educationDeduction">
+            EDUCATION DEDUCTION
+          </label>
+
+          <input
+            id="educationDeduction"
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="educationDeduction"
+          />
+
+        </div>
+
+
+        <!-- CREDITS -->
+        <div class="section-divider">
+
+          <span>
+            TAX CREDITS
+          </span>
+
+        </div>
+
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="childCredit">
+              CHILD CREDIT
+            </label>
+
+            <input
+              id="childCredit"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="childCredit"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="otherCredit">
+              OTHER CREDIT
+            </label>
+
+            <input
+              id="otherCredit"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="otherCredit"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- DATA STATUS -->
+        <div
+          class="data-warning"
+          *ngIf="!taxDataAvailable"
+        >
+
+          <div class="warning-icon">
+            !
+          </div>
+
+          <div>
+
+            <strong>
+              TAX DATA UNAVAILABLE
+            </strong>
+
+            <p>
+              Tax data for this country and tax year
+              is currently unavailable. Please select
+              another supported configuration.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- CALCULATE -->
+        <button
+          type="button"
+          class="calculate-button"
+          (click)="calculate()"
+          [disabled]="loading"
+        >
+
+          <span>
+            CALCULATE TAX
+          </span>
+
+          <span class="button-arrow">
+            →
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- RESULT PANEL -->
+      <div class="result-panel">
+
+        <!-- EMPTY -->
+        <div
+          class="empty-result"
+          *ngIf="!hasCalculated"
+        >
+
+          <div class="empty-icon">
+            %
+          </div>
+
+          <h2>
+            TAX RESULT
+          </h2>
+
+          <p>
+            ENTER YOUR INFORMATION AND CALCULATE
+            YOUR ESTIMATED TAX.
+          </p>
+
+        </div>
+
+
+        <!-- UNAVAILABLE -->
+        <div
+          class="result-unavailable"
+          *ngIf="hasCalculated && result && !result.available"
+        >
+
+          <div class="unavailable-icon">
+            !
+          </div>
+
+          <h2>
+            CALCULATION UNAVAILABLE
+          </h2>
+
+          <p>
+            {{ result.message }}
+          </p>
+
+        </div>
+
+
+        <!-- RESULT -->
+        <ng-container
+          *ngIf="hasCalculated && result?.available"
+        >
+
+          <!-- TOP RESULT -->
+          <div class="result-top">
+
+            <div>
+
+              <span class="result-label">
+                NET TAKE-HOME INCOME
+              </span>
+
+              <div
+                class="net-income"
+                aria-live="polite"
+              >
+                {{ formatCurrency(result!.netIncome) }}
+              </div>
+
+              <span class="result-subtitle">
+                AFTER ESTIMATED TAXES AND CONTRIBUTIONS
+              </span>
+
+            </div>
+
+
+            <div class="take-home-circle">
+
+              <strong>
+                {{ formatNumber(result!.takeHomePercentage, 1) }}%
+              </strong>
+
+              <span>
+                TAKE HOME
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- KEY METRICS -->
+          <div class="metrics-grid">
+
+            <div class="metric-card">
+
+              <span>
+                GROSS INCOME
+              </span>
+
+              <strong>
+                {{ formatCurrency(result!.grossIncome) }}
+              </strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+              <span>
+                TAXABLE INCOME
+              </span>
+
+              <strong>
+                {{ formatCurrency(result!.taxableIncome) }}
+              </strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+              <span>
+                INCOME TAX
+              </span>
+
+              <strong>
+                {{ formatCurrency(result!.incomeTax) }}
+              </strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+              <span>
+                SOCIAL CONTRIBUTIONS
+              </span>
+
+              <strong>
+                {{ formatCurrency(result!.socialContributions) }}
+              </strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+              <span>
+                REGIONAL TAX
+              </span>
+
+              <strong>
+                {{ formatCurrency(result!.regionalTax) }}
+              </strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+              <span>
+                TOTAL TAX
+              </span>
+
+              <strong class="red-number">
+                {{ formatCurrency(result!.totalTaxAndContributions) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- RATE CARDS -->
+          <div class="rate-grid">
+
+            <div class="rate-card">
+
+              <span>
+                EFFECTIVE TAX RATE
+              </span>
+
+              <strong>
+                {{ formatPercent(result!.effectiveTaxRate) }}
+              </strong>
+
+            </div>
+
+
+            <div class="rate-card">
+
+              <span>
+                MARGINAL TAX RATE
+              </span>
+
+              <strong>
+                {{ formatPercent(result!.marginalTaxRate) }}
+              </strong>
+
+            </div>
+
+
+            <div class="rate-card">
+
+              <span>
+                TAKE-HOME
+              </span>
+
+              <strong>
+                {{ formatPercent(result!.takeHomePercentage) }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- EXCHANGE RATE -->
+          <div
+            class="exchange-box"
+            *ngIf="
+              taxForm.get('taxCurrency')?.value !==
+              taxForm.get('displayCurrency')?.value
+            "
+          >
+
+            <div>
+
+              <strong>
+                EXCHANGE RATE
+              </strong>
+
+              <span *ngIf="exchangeLoading">
+                Loading...
+              </span>
+
+              <span
+                *ngIf="
+                  !exchangeLoading &&
+                  exchangeRateMessage
+                "
+              >
+                {{ exchangeRateMessage }}
+              </span>
+
+            </div>
+
+            <small>
+              Tax is calculated using
+              {{ currentTaxCurrency }} rules first.
+            </small>
+
+          </div>
+
+
+          <!-- BREAKDOWN -->
+          <section class="result-section">
+
+            <div class="section-heading">
+
+              <div>
+
+                <span class="section-number">
+                  02
+                </span>
+
+                <div>
+
+                  <h2>
+                    TAX BREAKDOWN
+                  </h2>
+
+                  <p>
+                    ESTIMATED DISTRIBUTION OF YOUR ANNUAL INCOME.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="breakdown-list">
+
+              <div
+                class="breakdown-row"
+                *ngFor="let item of result!.breakdown"
+              >
+
+                <div class="breakdown-info">
+
+                  <span>
+                    {{ item.label }}
+                  </span>
+
+                  <strong>
+                    {{ formatCurrency(item.value) }}
+                  </strong>
+
+                </div>
+
+
+                <div class="breakdown-track">
+
+                  <div
+                    class="breakdown-fill"
+                    [style.width.%]="getProgressWidth(item.percentage)"
+                  ></div>
+
+                </div>
+
+
+                <span class="breakdown-percent">
+                  {{ formatNumber(item.percentage, 1) }}%
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- PERIOD BREAKDOWN -->
+          <section class="result-section">
+
+            <div class="section-heading">
+
+              <div>
+
+                <span class="section-number">
+                  03
+                </span>
+
+                <div>
+
+                  <h2>
+                    PERIOD BREAKDOWN
+                  </h2>
+
+                  <p>
+                    ESTIMATED INCOME AND TAX BY PERIOD.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="period-table-wrapper">
+
+              <table class="period-table">
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      PERIOD
+                    </th>
+
+                    <th>
+                      GROSS INCOME
+                    </th>
+
+                    <th>
+                      TAX
+                    </th>
+
+                    <th>
+                      CONTRIBUTIONS
+                    </th>
+
+                    <th>
+                      NET INCOME
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  <tr>
+
+                    <td>
+                      Annual
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.annual.gross) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.annual.tax) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.annual.contributions) }}
+                    </td>
+
+                    <td class="net-cell">
+                      {{ formatCurrency(result!.annual.net) }}
+                    </td>
+
+                  </tr>
+
+
+                  <tr>
+
+                    <td>
+                      Monthly
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.monthly.gross) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.monthly.tax) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.monthly.contributions) }}
+                    </td>
+
+                    <td class="net-cell">
+                      {{ formatCurrency(result!.monthly.net) }}
+                    </td>
+
+                  </tr>
+
+
+                  <tr>
+
+                    <td>
+                      Weekly
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.weekly.gross) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.weekly.tax) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.weekly.contributions) }}
+                    </td>
+
+                    <td class="net-cell">
+                      {{ formatCurrency(result!.weekly.net) }}
+                    </td>
+
+                  </tr>
+
+
+                  <tr>
+
+                    <td>
+                      Daily
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.daily.gross) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.daily.tax) }}
+                    </td>
+
+                    <td>
+                      {{ formatCurrency(result!.daily.contributions) }}
+                    </td>
+
+                    <td class="net-cell">
+                      {{ formatCurrency(result!.daily.net) }}
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- COUNTRY COMPARISON -->
+  <section class="content-section comparison-section">
+
+    <div class="content-header">
+
+      <span class="section-number">
+        04
+      </span>
+
+      <div>
+
+        <h2>
+          COMPARE COUNTRIES
+        </h2>
+
+        <p>
+          COMPARE ESTIMATED TAX USING THE SAME ANNUAL INCOME.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="comparison-selectors">
+
+      <button
+        type="button"
+        *ngFor="
+          let country of countries
+          | slice:0:5
+        "
+        class="comparison-chip"
+        [class.active]="isComparisonSelected(country.code)"
+        (click)="toggleComparison(country.code)"
+      >
+        {{ country.name }}
+      </button>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="compare-button"
+      (click)="compareCountries()"
+    >
+      COMPARE SELECTED COUNTRIES
+    </button>
+
+
+    <div
+      class="comparison-table-wrapper"
+      *ngIf="comparisonResults.length > 0"
+    >
+
+      <table class="comparison-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              COUNTRY
+            </th>
+
+            <th>
+              INCOME TAX
+            </th>
+
+            <th>
+              CONTRIBUTIONS
+            </th>
+
+            <th>
+              TOTAL TAX
+            </th>
+
+            <th>
+              NET INCOME
+            </th>
+
+            <th>
+              EFFECTIVE RATE
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="let comparison of comparisonResults"
+          >
+
+            <td>
+
+              <strong>
+                {{ comparison.country }}
+              </strong>
+
+              <small>
+                {{ comparison.currency }}
+              </small>
+
+            </td>
+
+
+            <ng-container *ngIf="comparison.available">
+
+              <td>
+                {{
+                  formatCurrency(
+                    comparison.incomeTax,
+                    comparison.currency
+                  )
+                }}
+              </td>
+
+
+              <td>
+                {{
+                  formatCurrency(
+                    comparison.contributions,
+                    comparison.currency
+                  )
+                }}
+              </td>
+
+
+              <td class="red-number">
+                {{
+                  formatCurrency(
+                    comparison.totalTax,
+                    comparison.currency
+                  )
+                }}
+              </td>
+
+
+              <td class="net-cell">
+                {{
+                  formatCurrency(
+                    comparison.netIncome,
+                    comparison.currency
+                  )
+                }}
+              </td>
+
+
+              <td>
+                {{
+                  formatPercent(
+                    comparison.effectiveRate
+                  )
+                }}
+              </td>
+
+            </ng-container>
+
+
+            <td
+              colspan="5"
+              *ngIf="!comparison.available"
+              class="unavailable-cell"
+            >
+              UNAVAILABLE
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- EDUCATIONAL CONTENT -->
+  <section class="content-section article-section">
+
+    <div class="content-header">
+
+      <span class="section-number">
+        05
+      </span>
+
+      <div>
+
+        <h2>
+          HOW TO CALCULATE INCOME TAX
+        </h2>
+
+        <p>
+          UNDERSTAND THE BASIC TAX CALCULATION PROCESS.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="article-grid">
+
+      <article class="article-card">
+
+        <span class="article-number">
+          01
+        </span>
+
+        <h3>
+          TAXABLE INCOME
+        </h3>
+
+        <p>
+          Taxable income is generally calculated by
+          reducing gross income by deductions allowed
+          under the applicable country's tax rules.
+        </p>
+
+        <div class="formula">
+          TAXABLE INCOME =
+          GROSS INCOME − ELIGIBLE DEDUCTIONS
+        </div>
+
+      </article>
+
+
+      <article class="article-card">
+
+        <span class="article-number">
+          02
+        </span>
+
+        <h3>
+          INCOME TAX
+        </h3>
+
+        <p>
+          Progressive tax systems divide taxable income
+          into brackets. Each portion of income is taxed
+          at the rate applicable to that bracket.
+        </p>
+
+        <div class="formula">
+          TAX =
+          SUM OF TAX ACROSS APPLICABLE BRACKETS
+        </div>
+
+      </article>
+
+
+      <article class="article-card">
+
+        <span class="article-number">
+          03
+        </span>
+
+        <h3>
+          NET INCOME
+        </h3>
+
+        <p>
+          Take-home income is calculated after applicable
+          income tax, social contributions, regional taxes,
+          deductions and eligible credits.
+        </p>
+
+        <div class="formula">
+          NET =
+          GROSS − TAX − CONTRIBUTIONS + CREDITS
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- FAQ -->
+  <section class="content-section faq-section">
+
+    <div class="content-header">
+
+      <span class="section-number">
+        06
+      </span>
+
+      <div>
+
+        <h2>
+          FREQUENTLY ASKED QUESTIONS
+        </h2>
+
+        <p>
+          COMMON QUESTIONS ABOUT INCOME TAX CALCULATIONS.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="faq-list">
+
+      <details
+        *ngFor="let faq of faqs"
+      >
+
+        <summary>
+
+          {{ faq.question }}
+
+          <span>
+            +
+          </span>
+
+        </summary>
+
+        <div class="faq-answer">
+          {{ faq.answer }}
+        </div>
+
+      </details>
+
+    </div>
+
+  </section>
+
+
+  <!-- DISCLAIMER -->
+  <section class="disclaimer-section">
+
+    <div class="disclaimer-icon">
+      !
+    </div>
+
+    <div>
+
+      <strong>
+        IMPORTANT TAX DISCLAIMER
+      </strong>
+
+      <p>
+        This calculator provides estimates for informational
+        purposes only. Actual tax liability may vary depending
+        on individual circumstances, local regulations,
+        deductions, credits, filing status and tax authority
+        rules. Always verify calculations with the relevant
+        tax authority or a qualified tax professional.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="tax-footer">
+
+    <span>
+      GLOBAL INCOME TAX CALCULATOR
+    </span>
+
+    <span>
+      ESTIMATES ONLY · VERIFY WITH YOUR TAX AUTHORITY
+    </span>
+
+  </footer>
+
+</div>
